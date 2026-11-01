@@ -78,6 +78,11 @@ protected:
 	Common::Error run() override;
 
 private:
+	Common::Error runRoomViewer();
+	/** Second generation: the original programs in the interpreter (title program, then the game) */
+	Common::Error runVersion2();
+	/** Test mode of runVersion2: fixed input and time, a hash of every picture into a file */
+	Common::Error runVersion2Test();
 	void initPalette();
 	Span roomGraphics(uint n);
 	void showRoom(uint index);

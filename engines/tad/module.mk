@@ -2,10 +2,13 @@ MODULE := engines/tad
 
 MODULE_OBJS = \
 	console.o \
+	cpu.o \
+	dosvm.o \
 	graphics.o \
 	metaengine.o \
 	resource.o \
 	room.o \
+	runner.o \
 	tad.o
 
 # This module can be built as a plugin
