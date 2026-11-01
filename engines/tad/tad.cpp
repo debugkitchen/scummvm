@@ -37,6 +37,8 @@
 
 #include "tad/console.h"
 #include "tad/runner.h"
+#include "tad/script.h"
+#include "tad/scripts.h"
 #include "tad/tad.h"
 
 namespace Tad {
@@ -298,160 +300,179 @@ static void presentVm(const DosVm &vm) {
 	g_system->updateScreen();
 }
 
+/** Translated functions of a program, if the engine has them */
+static void installScripts(ProgramVm &vm, const Common::String &gameId, uint program) {
+	if (ConfMan.hasKey("tad_original") && ConfMan.getBool("tad_original"))
+		return;
+	if (gameId == "bifi2") {
+		if (program == 1)
+			vm.installScript(bifi2XP01Functions, 0x350a);
+		else
+			vm.installScript(bifi2XP00Functions, 0x1dd7);
+	} else {
+		if (program == 1)
+			vm.installScript(schattenXP01Functions, 0x31ef);
+		else
+			vm.installScript(schattenXP00Functions, 0x1e3a);
+	}
+}
+
+/** Play: picture, mouse, keyboard and time between two frames */
+class GameHost : public FrameHost {
+public:
+	explicit GameHost(Engine *engine) : _engine(engine), _limiter(g_system, 60) {
+		_last = g_system->getMillis();
+	}
+
+	void frameStart(ProgramVm &vm, int n) override {
+		// a release reaches the program only after it ran a frame with the key held
+		for (uint i = 0; i < _releases.size(); i++) {
+			vm.keyEvent(_releases[i] | 0x80);
+			for (uint j = 0; j < _held.size(); j++)
+				if (_held[j] == _releases[i]) {
+					_held.remove_at(j);
+					break;
+				}
+		}
+		_releases.clear();
+		pollEvents(vm);
+		const uint32 now = g_system->getMillis();
+		vm.elapse(MIN<uint32>(100, now - _last));
+		_last = now;
+	}
+
+	bool frameDone(ProgramVm &vm, int n) override {
+		presentVm(vm);
+		_limiter.delayBeforeSwap();
+		_limiter.startFrame();
+		return !_engine->shouldQuit();
+	}
+
+private:
+	void pollEvents(ProgramVm &vm) {
+		Common::Event e;
+		while (g_system->getEventManager()->pollEvent(e)) {
+			switch (e.type) {
+			case Common::EVENT_MOUSEMOVE:
+				vm.mouse.x = CLIP<int>(e.mouse.x, 0, kScreenWidth - 1);
+				vm.mouse.y = CLIP<int>(e.mouse.y, 0, kScreenHeight - 1);
+				break;
+			case Common::EVENT_LBUTTONDOWN:
+			case Common::EVENT_RBUTTONDOWN:
+				vm.mouse.buttons |= e.type == Common::EVENT_LBUTTONDOWN ? 1 : 2;
+				vm.mouse.pressed = 1;
+				break;
+			case Common::EVENT_LBUTTONUP:
+				vm.mouse.buttons &= ~1;
+				break;
+			case Common::EVENT_RBUTTONUP:
+				vm.mouse.buttons &= ~2;
+				break;
+			case Common::EVENT_KEYDOWN: {
+				const byte sc = scanCode(e.kbd);
+				if (!sc)
+					break;
+				g_asciiOfScan[sc] = e.kbd.ascii < 0x100 ? (byte)e.kbd.ascii : 0;
+				bool isHeld = false;
+				for (uint j = 0; j < _held.size(); j++)
+					isHeld |= _held[j] == sc;
+				if (!isHeld) {
+					_held.push_back(sc);
+					vm.keyEvent(sc);
+				}
+				break;
+			}
+			case Common::EVENT_KEYUP: {
+				const byte sc = scanCode(e.kbd);
+				if (sc)
+					_releases.push_back(sc);
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
+
+	Engine *_engine;
+	Graphics::FrameLimiter _limiter;
+	uint32 _last;
+	Common::Array<byte> _held, _releases;
+};
+
 Common::Error TadEngine::runVersion2() {
 	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
 	GameFiles files(_targetName);
 	memset(g_asciiOfScan, 0, sizeof(g_asciiOfScan));
+	GameHost host(this);
 
 	for (uint p = files.has("XP00.EXE") ? 0 : 1; p < 2 && !shouldQuit(); p++) {
-		ProgramVm vm(&files, programs[p]);
+		ProgramVm vm(&files, programs[p], &host);
 		vm.asciiOf = asciiOfScan;
 		if (!vm.start(*files.get(programs[p].exe)))
 			return Common::Error(Common::kUnknownError, Common::String::format("Could not start %s", programs[p].exe));
-		debug(1, "TAD: %s started", programs[p].exe);
-
-		Common::Array<byte> held, releases;
-		uint32 last = g_system->getMillis();
-		Graphics::FrameLimiter limiter(g_system, 60);
-		bool running = true;
-		while (running && !shouldQuit()) {
-			// a release reaches the program only after it ran a frame with the key held
-			for (uint i = 0; i < releases.size(); i++) {
-				vm.keyEvent(releases[i] | 0x80);
-				for (uint j = 0; j < held.size(); j++)
-					if (held[j] == releases[i]) {
-						held.remove_at(j);
-						break;
-					}
-			}
-			releases.clear();
-
-			Common::Event e;
-			while (g_system->getEventManager()->pollEvent(e)) {
-				switch (e.type) {
-				case Common::EVENT_MOUSEMOVE:
-					vm.mouse.x = CLIP<int>(e.mouse.x, 0, kScreenWidth - 1);
-					vm.mouse.y = CLIP<int>(e.mouse.y, 0, kScreenHeight - 1);
-					break;
-				case Common::EVENT_LBUTTONDOWN:
-				case Common::EVENT_RBUTTONDOWN:
-					vm.mouse.buttons |= e.type == Common::EVENT_LBUTTONDOWN ? 1 : 2;
-					vm.mouse.pressed = 1;
-					break;
-				case Common::EVENT_LBUTTONUP:
-					vm.mouse.buttons &= ~1;
-					break;
-				case Common::EVENT_RBUTTONUP:
-					vm.mouse.buttons &= ~2;
-					break;
-				case Common::EVENT_KEYDOWN: {
-					const byte sc = scanCode(e.kbd);
-					if (!sc)
-						break;
-					g_asciiOfScan[sc] = e.kbd.ascii < 0x100 ? (byte)e.kbd.ascii : 0;
-					bool isHeld = false;
-					for (uint j = 0; j < held.size(); j++)
-						isHeld |= held[j] == sc;
-					if (!isHeld) {
-						held.push_back(sc);
-						vm.keyEvent(sc);
-					}
-					break;
-				}
-				case Common::EVENT_KEYUP: {
-					const byte sc = scanCode(e.kbd);
-					if (sc)
-						releases.push_back(sc);
-					break;
-				}
-				default:
-					break;
-				}
-			}
-
-			const uint32 now = g_system->getMillis();
-			vm.elapse(MIN<uint32>(100, now - last));
-			last = now;
-			const DosVm::RunResult r = vm.runFrame(3000000);
-			if (r == DosVm::kRunError)
-				return Common::Error(Common::kUnknownError, Common::String::format("%s stopped at %04x:%04x", programs[p].exe, vm.sreg[kCS], vm.ip));
-			if (r == DosVm::kRunYield && vm.yielded() == DosVm::kYieldExit) {
-				debug(1, "TAD: %s ended (%d)", programs[p].exe, vm.exitCode());
-				if (vm.exitCode() && programs[p].stopOnError)
-					return Common::kNoError;
-				running = false;
-			}
-			presentVm(vm);
-			limiter.delayBeforeSwap();
-			limiter.startFrame();
-		}
+		installScripts(vm, getGameId(), p);
+		debug(1, "TAD: %s started, %u translated functions", programs[p].exe, vm.scriptCount());
+		if (!vm.execute())
+			return Common::Error(Common::kUnknownError, Common::String::format("%s stopped at %04x:%04x", programs[p].exe, vm.sreg[kCS], vm.ip));
+		if (shouldQuit())
+			break;
+		debug(1, "TAD: %s ended (%d)", programs[p].exe, vm.exitCode());
+		if (vm.exitCode() && programs[p].stopOnError)
+			break;
 	}
 	return Common::kNoError;
 }
 
-Common::Error TadEngine::runVersion2Test() {
-	// tad_test = <program index 0/1>, tad_test_input = file with lines "frame x y buttons" or
-	// "frame w seg off value" (poke), tad_test_frames = count, tad_test_output = file for the hashes
-	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
-	const uint p = ConfMan.getInt("tad_test");
-	const int frames = ConfMan.getInt("tad_test_frames");
-	const uint32 budget = ConfMan.hasKey("tad_test_budget") ? ConfMan.getInt("tad_test_budget") : 4000000;
-	GameFiles files(_targetName);
-	files.setKeepWrites(false);
-	ProgramVm vm(&files, programs[p]);
-	if (!vm.start(*files.get(programs[p].exe)))
-		return Common::Error(Common::kUnknownError, "start failed");
-
+/** Tests: fixed input and 40 ms per frame, a hash of every picture */
+class TestHost : public FrameHost {
+public:
 	struct Input {
 		int frame;
 		bool poke;
 		uint a, b, c;
 	};
-	Common::Array<Input> input;
-	if (ConfMan.hasKey("tad_test_input")) {
-		Common::File f;
-		if (f.open(Common::FSNode(ConfMan.getPath("tad_test_input")))) {
-			while (!f.eos()) {
-				const Common::String line = f.readLine();
-				Input in;
-				if (sscanf(line.c_str(), "%d w %x %x %x", &in.frame, &in.a, &in.b, &in.c) == 4) {
-					in.poke = true;
-					input.push_back(in);
-				} else if (sscanf(line.c_str(), "%d %u %u %u", &in.frame, &in.a, &in.b, &in.c) == 4) {
-					in.poke = false;
-					input.push_back(in);
-				}
-			}
-		}
-	}
 
+	Common::Array<Input> input;
+	int frames = 0;
+	int dumpFrame = -1;
+	int scriptFrom = 10;
+	Common::Path dumpPath;
 	Common::String out;
-	for (int f = 0; f < frames; f++) {
+	const ScriptFunction *scripts = nullptr;
+	uint16 scriptDs = 0;
+	Common::Array<ScriptFunction> selected; ///< a part of the list (to find a faulty function)
+
+	void frameStart(ProgramVm &vm, int f) override {
 		for (uint i = 0; i < input.size(); i++) {
 			const Input &in = input[i];
-			if (in.frame != f)
+			if (in.frame != f || in.poke)
 				continue;
-			if (in.poke) {
-				vm.ww(in.a, in.b, in.c);
-			} else {
-				vm.mouse.x = in.a;
-				vm.mouse.y = in.b;
-				vm.mouse.buttons = in.c;
-				if (in.c)
-					vm.mouse.pressed = 1;
-			}
+			vm.mouse.x = in.a;
+			vm.mouse.y = in.b;
+			vm.mouse.buttons = in.c;
+			if (in.c)
+				vm.mouse.pressed = 1;
 		}
-		if (f == 10)
+		// as the reference runs: from frame 10 on time runs per frame only, and the translated
+		// functions start then
+		if (f == scriptFrom) {
 			vm.noStepTime = true;
-		vm.elapse(40);
-		const DosVm::RunResult r = vm.runFrame(budget);
-		if (r == DosVm::kRunError) {
-			out += Common::String::format("error %04x:%04x\n", vm.sreg[kCS], vm.ip);
-			break;
+			if (scripts)
+				vm.installScript(scripts, scriptDs);
 		}
-		if (ConfMan.hasKey("tad_test_dump") && ConfMan.getInt("tad_test_dump") == f) {
+		for (uint i = 0; i < input.size(); i++) {
+			const Input &in = input[i];
+			if (in.frame == f && in.poke)
+				vm.ww(in.a, in.b, in.c);
+		}
+		vm.elapse(40);
+	}
+
+	bool frameDone(ProgramVm &vm, int f) override {
+		if (f == dumpFrame) {
 			Common::DumpFile d;
-			if (d.open(Common::FSNode(ConfMan.getPath("tad_test_output")).getParent().getChild("mem.bin")))
+			if (d.open(dumpPath))
 				d.write(vm.mem(), 0xa0000);
 		}
 		byte buf[64000 + 768];
@@ -459,15 +480,79 @@ Common::Error TadEngine::runVersion2Test() {
 		memcpy(buf + 64000, vm.dac(), 768);
 		Common::MemoryReadStream s(buf, sizeof(buf));
 		out += Common::computeStreamMD5AsString(s).substr(0, 10) +
-			Common::String::format(" %u %04x:%04x %d\n", vm.steps, vm.sreg[kCS], vm.ip, (int)r);
-		if (r == DosVm::kRunYield && vm.yielded() == DosVm::kYieldExit) {
+			Common::String::format(" %u %04x:%04x\n", vm.steps, vm.sreg[kCS], vm.ip);
+		if (vm.yielded() == DosVm::kYieldExit)
 			out += Common::String::format("exit %d\n", vm.exitCode());
-			break;
+		return f + 1 < frames;
+	}
+};
+
+Common::Error TadEngine::runVersion2Test() {
+	// tad_test = <program 0/1>, tad_test_input = file with lines "frame x y buttons" or
+	// "frame w seg off value" (poke), tad_test_frames = count, tad_test_output = file for the
+	// hashes, tad_test_script = true: the translated functions from frame tad_test_script_from
+	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
+	const uint p = ConfMan.getInt("tad_test");
+	GameFiles files(_targetName);
+	files.setKeepWrites(false);
+	TestHost host;
+	host.frames = ConfMan.getInt("tad_test_frames");
+	if (ConfMan.hasKey("tad_test_dump")) {
+		host.dumpFrame = ConfMan.getInt("tad_test_dump");
+		host.dumpPath = Common::FSNode(ConfMan.getPath("tad_test_output")).getParent().getChild("mem.bin").getPath();
+	}
+	if (ConfMan.hasKey("tad_test_script") && ConfMan.getBool("tad_test_script")) {
+		if (getGameId() == "bifi2") {
+			host.scripts = p ? bifi2XP01Functions : bifi2XP00Functions;
+			host.scriptDs = p ? 0x350a : 0x1dd7;
+		} else {
+			host.scripts = p ? schattenXP01Functions : schattenXP00Functions;
+			host.scriptDs = p ? 0x31ef : 0x1e3a;
+		}
+		if (ConfMan.hasKey("tad_test_script_from"))
+			host.scriptFrom = ConfMan.getInt("tad_test_script_from");
+		// tad_test_script_part=first,count installs only these entries of the list
+		uint first = 0, count = 0;
+		if (ConfMan.hasKey("tad_test_script_part") &&
+				sscanf(ConfMan.get("tad_test_script_part").c_str(), "%u,%u", &first, &count) == 2) {
+			for (uint i = 0; host.scripts[i].fn; i++)
+				if (i >= first && i < first + count)
+					host.selected.push_back(host.scripts[i]);
+			const ScriptFunction end = { 0, 0, nullptr };
+			host.selected.push_back(end);
+			host.scripts = &host.selected[0];
 		}
 	}
+	ProgramVm vm(&files, programs[p], &host);
+	if (ConfMan.hasKey("tad_test_budget"))
+		vm.budget = ConfMan.getInt("tad_test_budget");
+	else
+		vm.budget = 4000000;
+	if (!vm.start(*files.get(programs[p].exe)))
+		return Common::Error(Common::kUnknownError, "start failed");
+
+	if (ConfMan.hasKey("tad_test_input")) {
+		Common::File f;
+		if (f.open(Common::FSNode(ConfMan.getPath("tad_test_input")))) {
+			while (!f.eos()) {
+				const Common::String line = f.readLine();
+				TestHost::Input in;
+				if (sscanf(line.c_str(), "%d w %x %x %x", &in.frame, &in.a, &in.b, &in.c) == 4) {
+					in.poke = true;
+					host.input.push_back(in);
+				} else if (sscanf(line.c_str(), "%d %u %u %u", &in.frame, &in.a, &in.b, &in.c) == 4) {
+					in.poke = false;
+					host.input.push_back(in);
+				}
+			}
+		}
+	}
+
+	if (!vm.execute())
+		host.out += Common::String::format("error %04x:%04x\n", vm.sreg[kCS], vm.ip);
 	Common::DumpFile d;
 	if (d.open(Common::FSNode(ConfMan.getPath("tad_test_output"))))
-		d.writeString(out);
+		d.writeString(host.out);
 	return Common::kNoError;
 }
 

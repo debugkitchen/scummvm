@@ -24,7 +24,9 @@
 #include "common/savefile.h"
 #include "common/system.h"
 
+#include "tad/detection.h"
 #include "tad/runner.h"
+#include "tad/script.h"
 
 namespace Tad {
 
@@ -109,7 +111,13 @@ static const uint16 kSoundStubs[] = {
 	0x42c, 0x431, 0x436, 0x43b, 0x440, 0x445, 0x44a, 0x44f, 0x454
 };
 
-ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc) : DosVm(files), _desc(desc) {
+ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host) : DosVm(files),
+	budget(3000000), _desc(desc), _host(host), _script(nullptr), _frame(0), _frameSteps(0),
+	_frameBlocks(0), _error(false) {
+}
+
+ProgramVm::~ProgramVm() {
+	delete _script;
 }
 
 bool ProgramVm::start(const ByteArray &exe) {
@@ -122,6 +130,16 @@ bool ProgramVm::start(const ByteArray &exe) {
 	if (_desc.frameSeg)
 		setTrap(_desc.frameSeg, _desc.frameOff, kTrapFrame);
 	return true;
+}
+
+void ProgramVm::installScript(const ScriptFunction *list, uint16 ds) {
+	if (!_script)
+		_script = new ScriptRuntime(this, this, ds);
+	_script->install(list);
+}
+
+uint ProgramVm::scriptCount() const {
+	return _script ? _script->count() : 0;
 }
 
 void ProgramVm::installSound() {
@@ -158,17 +176,94 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 	case kTrapSoundStub:
 		retf(0, 0);
 		return kTrapContinue;
+	case kTrapScript:
+		// the function may have run for several frames: the run that reached the trap ends, the
+		// caller starts a new one with a fresh budget
+		_script->invoke(sreg[kCS], ip);
+		setYield(kYieldNone);
+		return kTrapStop;
 	default:
 		return kTrapPass;
 	}
 }
 
-DosVm::RunResult ProgramVm::runFrame(uint32 budget) {
+uint32 ProgramVm::remaining() const {
+	const uint32 used = steps - _frameSteps;
+	return MAX<uint32>(1000, budget > used ? budget - used : 0);
+}
+
+void ProgramVm::startFrame() {
+	_host->frameStart(*this, _frame);
 	keepPit = true;
 	resetPitReads();
-	const uint32 s0 = steps;
+	_frameSteps = steps;
+	_frameBlocks = _script ? _script->blocks : 0;
 	serviceIrqs();
-	return run(MAX<uint32>(1000, budget - MIN(budget, steps - s0)));
+}
+
+void ProgramVm::endFrame() {
+	if (stopping())
+		return;
+	if (!_host->frameDone(*this, _frame)) {
+		stop();
+		return;
+	}
+	_frame++;
+	startFrame();
+}
+
+void ProgramVm::checkBudget() {
+	const uint32 used = steps - _frameSteps + 8 * (_script->blocks - _frameBlocks);
+	if (used > budget) {
+		debugC(2, kDebugScript, "TAD: frame %d ends in translated code (%u steps, %u blocks)", _frame, steps - _frameSteps, _script->blocks - _frameBlocks);
+		endFrame();
+	}
+}
+
+void ProgramVm::runToReturn(uint16 seg) {
+	for (;;) {
+		// as the table interpreter: every run inside a call gets the whole budget
+		const RunResult r = run(budget);
+		if (r == kRunReturn || stopping())
+			return;
+		if (r == kRunError) {
+			_error = true;
+			stop();
+			return;
+		}
+		if (r == kRunYield && yielded() == kYieldExit) {
+			// the program ended inside a call (exit()): the frame loop sees it
+			_host->frameDone(*this, _frame);
+			stop();
+			return;
+		}
+		if (r == kRunYield || r == kRunBudget) {
+			debugC(3, kDebugScript, "TAD: frame %d ends in a call (%d %d) at %04x:%04x", _frame, r, yielded(), sreg[kCS], ip);
+			endFrame();
+		}
+	}
+}
+
+bool ProgramVm::execute() {
+	startFrame();
+	while (!stopping()) {
+		const RunResult r = run(remaining());
+		if (stopping())
+			break;
+		if (r == kRunError) {
+			_error = true;
+			break;
+		}
+		if (r == kRunYield && yielded() == kYieldExit) {
+			_host->frameDone(*this, _frame);
+			break;
+		}
+		if (r == kRunYield || r == kRunBudget) {
+			debugC(3, kDebugScript, "TAD: frame %d ends (%d %d) at %04x:%04x", _frame, r, yielded(), sreg[kCS], ip);
+			endFrame();
+		}
+	}
+	return !_error;
 }
 
 } // End of namespace Tad

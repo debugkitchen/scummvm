@@ -58,26 +58,69 @@ private:
 	Common::HashMap<Common::String, ByteArrayPtr, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> _cache;
 };
 
-/** One run of an original program with the traps of the runner (frame end, sound driver) */
+class ScriptRuntime;
+struct ScriptFunction;
+class ProgramVm;
+
+/** What happens between two frames: picture, input and time (the game, or a test) */
+class FrameHost {
+public:
+	virtual ~FrameHost() {}
+	/** Before frame n runs: input and the time that passed */
+	virtual void frameStart(ProgramVm &vm, int n) = 0;
+	/** Frame n is complete; false stops the program */
+	virtual bool frameDone(ProgramVm &vm, int n) = 0;
+};
+
+/**
+ * One run of an original program with the traps of the runner (frame end, sound driver) and,
+ * optionally, its translated functions. The program runs until it ends; whenever it ends a
+ * frame (also inside translated code) the host shows the picture and gives input and time.
+ */
 class ProgramVm : public DosVm {
 public:
-	ProgramVm(FileProvider *files, const ProgramDesc &desc);
-	bool start(const ByteArray &exe);
+	enum {
+		kTrapFrame = 1,
+		kTrapSoundOk,
+		kTrapSoundStub,
+		kTrapScript
+	};
 
-	/** One display frame: pending interrupts, then the program until it ends the frame */
-	RunResult runFrame(uint32 budget);
+	ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host);
+	~ProgramVm() override;
+	bool start(const ByteArray &exe);
+	/** Translated functions that replace the original code (data segment ds) */
+	void installScript(const ScriptFunction *list, uint16 ds);
+	uint scriptCount() const;
+
+	/** Runs the program until it ends; returns false on an error */
+	bool execute();
+	/** Ends the current frame (picture, input, time) and starts the next one */
+	void endFrame();
+	/** Runs original code until the call made by translated code returns (to f000:0000 or seg:FFFE) */
+	void runToReturn(uint16 seg);
+	/** Start and end of a translated function: as the reference, the frame ends here when its
+	 *  budget (8086 steps plus 8 per translated block) is used up */
+	void checkBudget();
+
+	int frame() const { return _frame; }
+	uint32 budget;
 
 protected:
 	TrapResult onTrap(int id) override;
 
 private:
-	enum {
-		kTrapFrame = 1,
-		kTrapSoundOk,
-		kTrapSoundStub
-	};
 	void installSound();
+	void startFrame();
+	uint32 remaining() const;
+
 	ProgramDesc _desc;
+	FrameHost *_host;
+	ScriptRuntime *_script;
+	int _frame;
+	uint32 _frameSteps;
+	uint32 _frameBlocks;
+	bool _error;
 };
 
 } // End of namespace Tad

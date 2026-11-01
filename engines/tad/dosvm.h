@@ -113,6 +113,12 @@ public:
 		uint16 ds, x, y, flags;
 	} mouseVars;
 
+	/** Return address of the innermost near call from translated code (seg:FFFE) */
+	uint32 nearRet = 0xffffffff;
+	/** The program is being stopped: run() returns at once */
+	bool stopping() const { return _stopping; }
+	void stop() { _stopping = true; }
+
 	bool frameOnRetrace = false;
 	bool yieldOnWait = true;
 	bool noStepTime = false;
@@ -151,6 +157,7 @@ private:
 	};
 
 	FileProvider *_files;
+	bool _stopping = false;
 	Common::HashMap<uint32, int> _traps;
 	uint32 _skipTrap;
 	Yield _yielded;

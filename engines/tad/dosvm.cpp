@@ -134,8 +134,10 @@ DosVm::RunResult DosVm::run(uint32 maxSteps) {
 	if (!keepPit)
 		_pitReads = 0;
 	while (steps < end) {
+		if (_stopping)
+			return kRunReturn;
 		const uint32 k = ((uint32)sreg[kCS] << 16) | ip;
-		if (k == 0xf0000000)
+		if (k == 0xf0000000 || k == nearRet)
 			return kRunReturn;
 		if (sreg[kCS] == kDefaultSeg) {
 			// default handler reached by chaining: BIOS/DOS, then IRET
