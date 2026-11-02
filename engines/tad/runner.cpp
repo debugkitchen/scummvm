@@ -26,6 +26,7 @@
 
 #include "tad/detection.h"
 #include "tad/prims.h"
+#include "tad/render.h"
 #include "tad/runner.h"
 #include "tad/script.h"
 
@@ -113,12 +114,96 @@ static const uint16 kSoundStubs[] = {
 };
 
 ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host) : DosVm(files),
-	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _frame(0), _frameSteps(0),
+	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _graphics(nullptr), _syncDepth(0), _frame(0), _frameSteps(0),
 	_frameBlocks(0), _error(false) {
 }
 
 ProgramVm::~ProgramVm() {
+	delete _graphics;
 	delete _script;
+}
+
+void ProgramVm::installGraphics(const GraphicsDesc &desc) {
+	delete _graphics;
+	_graphics = new EngineGraphics(*this, desc);
+	setTrap(desc.roomSeg, desc.roomOff, kTrapRoom);
+	setTrap(desc.panelSeg, desc.panelOff, kTrapPanel);
+	setTrap(desc.textSeg, desc.textOff, kTrapTexts);
+	setTrap(desc.presentSeg, desc.presentOff, kTrapPresent);
+}
+
+CallResult ProgramVm::callSync(uint16 seg, uint16 off, const uint16 *args, uint n) {
+	const uint16 saveIp = ip, saveCs = sreg[kCS], saveEs = sreg[kES], saveDs = sreg[kDS];
+	const uint16 saveSp = r16[kSP], saveBp = r16[kBP], saveSi = r16[kSI], saveDi = r16[kDI];
+	const uint16 saveBx = r16[kBX], saveCx = r16[kCX];
+	for (int i = (int)n - 1; i >= 0; i--)
+		push(args[i]);
+	push(0xf000);
+	push(0x0000);
+	sreg[kCS] = seg;
+	ip = off;
+	_syncDepth++;
+	if (_script && _script->has(seg, off)) {
+		_script->invoke(seg, off);
+	} else {
+		for (;;) {
+			const RunResult r = run(budget);
+			if (r == kRunReturn || stopping())
+				break;
+			if (r == kRunStop)
+				continue;
+			if (r == kRunYield && yielded() != kYieldExit) {
+				// the reference stops here; a drawing routine does not wait for a frame
+				warning("TAD: call %04x:%04x waits for a frame", seg, off);
+				continue;
+			}
+			warning("TAD: call %04x:%04x did not return", seg, off);
+			_error = true;
+			stop();
+			break;
+		}
+	}
+	_syncDepth--;
+	CallResult res;
+	res.ax = r16[kAX];
+	res.dx = r16[kDX];
+	ip = saveIp;
+	sreg[kCS] = saveCs;
+	sreg[kES] = saveEs;
+	sreg[kDS] = saveDs;
+	r16[kSP] = saveSp;
+	r16[kBP] = saveBp;
+	r16[kSI] = saveSi;
+	r16[kDI] = saveDi;
+	r16[kBX] = saveBx;
+	r16[kCX] = saveCx;
+	return res;
+}
+
+CallResult ProgramVm::callNested(uint16 seg, uint16 off, const uint16 *args, uint n) {
+	uint16 saveR[8], saveS[4];
+	memcpy(saveR, r16, sizeof(saveR));
+	memcpy(saveS, sreg, sizeof(saveS));
+	const uint16 saveIp = ip, saveFlags = getFlags();
+	for (int i = (int)n - 1; i >= 0; i--)
+		push(args[i]);
+	push(0xf000);
+	push(0x0000);
+	sreg[kCS] = seg;
+	ip = off;
+	if (run(5000000) != kRunReturn && !stopping()) {
+		warning("TAD: call %04x:%04x did not return", seg, off);
+		_error = true;
+		stop();
+	}
+	CallResult res;
+	res.ax = r16[kAX];
+	res.dx = r16[kDX];
+	memcpy(r16, saveR, sizeof(saveR));
+	memcpy(sreg, saveS, sizeof(saveS));
+	ip = saveIp;
+	setFlags(saveFlags);
+	return res;
 }
 
 bool ProgramVm::start(const ByteArray &exe) {
@@ -196,6 +281,21 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 		_script->invoke(sreg[kCS], ip);
 		setYield(kYieldNone);
 		return kTrapStop;
+	case kTrapRoom:
+		_graphics->renderRoom();
+		retf(0, 0);
+		return kTrapContinue;
+	case kTrapPanel:
+		_graphics->drawPanel();
+		retf(0, 0);
+		return kTrapContinue;
+	case kTrapTexts:
+		retf(_graphics->drawTexts(), 0);
+		return kTrapContinue;
+	case kTrapPresent:
+		_graphics->present();
+		retf(0, 0);
+		return kTrapContinue;
 	default:
 		break;
 	}
@@ -228,7 +328,7 @@ void ProgramVm::startFrame() {
 }
 
 void ProgramVm::endFrame() {
-	if (stopping())
+	if (stopping() || _syncDepth)
 		return;
 	if (!_host->frameDone(*this, _frame)) {
 		stop();
@@ -239,6 +339,8 @@ void ProgramVm::endFrame() {
 }
 
 void ProgramVm::checkBudget() {
+	if (_syncDepth)
+		return;
 	const uint32 used = steps - _frameSteps + 8 * (_script->blocks - _frameBlocks);
 	if (used > budget) {
 		debugC(2, kDebugScript, "TAD: frame %d ends in translated code (%u steps, %u blocks)", _frame, steps - _frameSteps, _script->blocks - _frameBlocks);

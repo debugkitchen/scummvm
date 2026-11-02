@@ -25,7 +25,27 @@
 
 namespace Tad {
 
+namespace {
+
+/** Bytes of a buffer; reads past the end give 0 */
+struct MemSpan {
+	const byte *data;
+	uint32 size;
+
+	byte operator[](uint32 i) const { return i < size ? data[i] : 0; }
+	uint16 u16(uint32 o) const { return (*this)[o] | ((*this)[o + 1] << 8); }
+};
+
+} // End of anonymous namespace
+
 FramePtr decodeFrame(const Span &span, uint32 pos) {
+	if (span.empty())
+		return FramePtr();
+	return decodeFrame(span.data(), span.size, pos);
+}
+
+FramePtr decodeFrame(const byte *data, uint32 size, uint32 pos) {
+	const MemSpan span = { data, size };
 	if (pos + 8 > span.size)
 		return FramePtr();
 	FramePtr f(new Frame());

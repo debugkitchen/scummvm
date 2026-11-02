@@ -30,6 +30,7 @@
 
 #include "tad/dosvm.h"
 #include "tad/prims.h"
+#include "tad/render.h"
 
 namespace Tad {
 
@@ -674,6 +675,53 @@ static void frmGlyphWidth(DosVm &vm, uint16 cs, uint16, PrimResult &r) {
 	vm.df = 0;
 	r.ax = glyphWidth(vm, cs, arg(vm, 0) & 0xff);
 	r.dx = vm.sreg[kDS];
+}
+
+/** 2EA0:0E5F: frame at x, y; AX 1, but 0 for a visible frame of format 2 and above (aux: 2B72) */
+static void frmDraw(DosVm &vm, uint16 cs, uint16 aux, PrimResult &r) {
+	const uint16 off = arg(vm, 2), seg = arg(vm, 3);
+	const byte fmt = vm.rb(seg, (uint16)(off + 4));
+	Gfx gfx(vm, aux, cs);
+	const bool shown = gfx.frame(s16(arg(vm, 0)), s16(arg(vm, 1)), seg, off);
+	vm.df = 0;
+	r.ax = shown && fmt >= 2 ? 0 : 1;
+}
+
+/** 2EA0:0F8F: zero-terminated text at x, y in the current colour; advances its x argument */
+static void frmText(DosVm &vm, uint16 cs, uint16 aux, PrimResult &r) {
+	Common::Array<byte> codes;
+	for (uint16 i = 0;; i++) {
+		const byte c = vm.rb(arg(vm, 3), (uint16)(arg(vm, 2) + i));
+		codes.push_back(c);
+		if (!c)
+			break;
+	}
+	Gfx gfx(vm, aux, cs);
+	const int x = gfx.text(s16(arg(vm, 0)), s16(arg(vm, 1)), &codes[0], codes.size());
+	vm.ww(vm.sreg[kSS], (uint16)(vm.r16[kSP] + 4), (uint16)x);
+	vm.df = 0;
+	r.ax = 0;
+}
+
+/** 2EA0:0F74: one character (the argument word with its high byte cleared, as a text) */
+static void frmChar(DosVm &vm, uint16 cs, uint16 aux, PrimResult &r) {
+	const uint16 ss = vm.sreg[kSS], sp = vm.r16[kSP];
+	vm.wb(ss, (uint16)(sp + 9), 0);
+	const byte codes[2] = { vm.rb(ss, (uint16)(sp + 8)), 0 };
+	Gfx gfx(vm, aux, cs);
+	gfx.text(s16(arg(vm, 0)), s16(arg(vm, 1)), codes, 2);
+	vm.df = 0;
+	r.ax = 0;
+}
+
+/** 2C3C:23C0: tiles touching marked cells; AX = the result byte, sign extended */
+static void cellsTiles(DosVm &vm, uint16 cs, uint16, PrimResult &r) {
+	DirtyMap dirty(vm, cs);
+	const int res = dirty.tiles(arg(vm, 1), arg(vm, 0), arg(vm, 2), arg(vm, 3), arg(vm, 4), arg(vm, 5));
+	// the original counts its rows argument down
+	vm.ww(vm.sreg[kSS], (uint16)(vm.r16[kSP] + 14), 0);
+	vm.df = 0;
+	r.ax = (uint16)res;
 }
 
 // ---------------------------------------------------------------------------- 2B72 blocks
@@ -1479,9 +1527,13 @@ const PrimAddress bifi2XP01Prims[] = {
 	{ 0x2c3c, 0x20c1, cellsTest, nullptr, 0 },
 	{ 0x2c3c, 0x21ea, cellsRuns, nullptr, 0 },
 	{ 0x2c3c, 0x226e, cellsCopy, nullptr, 0 },
+	{ 0x2c3c, 0x23c0, cellsTiles, nullptr, 0 },
 	{ 0x2ea0, 0x0e1e, frmWindowPtr, nullptr, 0 },
 	{ 0x2ea0, 0x108c, frmFontPtr, nullptr, 0 },
 	{ 0x2ea0, 0x0e24, frmWindow, nullptr, 0 },
+	{ 0x2ea0, 0x0e5f, frmDraw, nullptr, 0x2b72 },
+	{ 0x2ea0, 0x0f8f, frmText, nullptr, 0x2b72 },
+	{ 0x2ea0, 0x0f74, frmChar, nullptr, 0x2b72 },
 	{ 0x2ea0, 0x100d, frmTextWidth, nullptr, 0 },
 	{ 0x2ea0, 0x1062, frmGlyphWidth, nullptr, 0 },
 	{ 0x2b72, 0x0008, blkGrab, nullptr, 0 },

@@ -53,6 +53,8 @@ typedef Common::SharedPtr<Frame> FramePtr;
  * Returns nullptr for data that is not a valid frame.
  */
 FramePtr decodeFrame(const Span &span, uint32 pos);
+/** The same from a buffer (for example the memory of the emulated program) */
+FramePtr decodeFrame(const byte *data, uint32 size, uint32 pos);
 
 /** A palette part: first colour, count, then 6-bit RGB triplets */
 struct PalettePart {

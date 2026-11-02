@@ -8,6 +8,7 @@ MODULE_OBJS = \
 	graphics.o \
 	metaengine.o \
 	prims.o \
+	render.o \
 	resource.o \
 	room.o \
 	runner.o \

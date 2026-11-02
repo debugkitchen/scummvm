@@ -27,6 +27,7 @@
 #include "common/str.h"
 
 #include "tad/dosvm.h"
+#include "tad/script.h"
 
 namespace Tad {
 
@@ -61,6 +62,8 @@ private:
 class ScriptRuntime;
 struct ScriptFunction;
 struct PrimAddress;
+struct GraphicsDesc;
+class EngineGraphics;
 class ProgramVm;
 
 /** What happens between two frames: picture, input and time (the game, or a test) */
@@ -85,6 +88,10 @@ public:
 		kTrapSoundOk,
 		kTrapSoundStub,
 		kTrapScript,
+		kTrapRoom,        ///< drawing routines in C++ (EngineGraphics)
+		kTrapPanel,
+		kTrapTexts,
+		kTrapPresent,
 		kTrapPrim         ///< kTrapPrim + n: entry n of the routines in C++
 	};
 
@@ -97,6 +104,16 @@ public:
 	/** Assembler routines done in C++ that replace the original code */
 	void installPrims(const PrimAddress *list);
 	uint primCount() const;
+	/** Room picture, panel, texts and screen output in C++ */
+	void installGraphics(const GraphicsDesc &desc);
+
+	/**
+	 * Far call that must finish at once (the own drawing routine of an object): translated or
+	 * original code, no frame ends inside; the registers except AX and DX stay as they were
+	 */
+	CallResult callSync(uint16 seg, uint16 off, const uint16 *args, uint n);
+	/** Far call of original code that keeps all registers and flags (as DosVm.call) */
+	CallResult callNested(uint16 seg, uint16 off, const uint16 *args, uint n);
 
 	/** Runs the program until it ends; returns false on an error */
 	bool execute();
@@ -123,6 +140,8 @@ private:
 	FrameHost *_host;
 	ScriptRuntime *_script;
 	const PrimAddress *_prims;
+	EngineGraphics *_graphics;
+	int _syncDepth;          ///< inside callSync: frames do not end
 	int _frame;
 	uint32 _frameSteps;
 	uint32 _frameBlocks;

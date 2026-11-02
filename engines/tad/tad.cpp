@@ -39,6 +39,7 @@
 #include "tad/runner.h"
 #include "tad/script.h"
 #include "tad/prims.h"
+#include "tad/render.h"
 #include "tad/scripts.h"
 #include "tad/tad.h"
 
@@ -307,6 +308,7 @@ struct ProgramCode {
 	uint16 ds;
 	const ScriptFunction *hand;
 	const PrimAddress *prims;
+	const GraphicsDesc *graphics;
 };
 
 static ProgramCode programCode(const Common::String &gameId, uint program) {
@@ -316,11 +318,13 @@ static ProgramCode programCode(const Common::String &gameId, uint program) {
 		c.ds = program ? 0x350a : 0x1dd7;
 		c.hand = program ? bifi2XP01Hand : nullptr;
 		c.prims = program ? bifi2XP01Prims : nullptr;
+		c.graphics = program ? &bifi2XP01Graphics : nullptr;
 	} else {
 		c.scripts = program ? schattenXP01Functions : schattenXP00Functions;
 		c.ds = program ? 0x31ef : 0x1e3a;
 		c.hand = program ? schattenXP01Hand : nullptr;
 		c.prims = program ? schattenXP01Prims : nullptr;
+		c.graphics = nullptr;
 	}
 	return c;
 }
@@ -335,6 +339,8 @@ static void installScripts(ProgramVm &vm, const Common::String &gameId, uint pro
 		vm.installScript(c.hand, c.ds);
 	if (c.prims)
 		vm.installPrims(c.prims);
+	if (c.graphics)
+		vm.installGraphics(*c.graphics);
 }
 
 /** Play: picture, mouse, keyboard and time between two frames */
@@ -465,6 +471,7 @@ public:
 	const ScriptFunction *hand = nullptr;
 	const PrimAddress *prims = nullptr;
 	Common::Array<PrimAddress> selectedPrims;
+	const GraphicsDesc *graphics = nullptr;
 
 	void frameStart(ProgramVm &vm, int f) override {
 		for (uint i = 0; i < input.size(); i++) {
@@ -487,6 +494,8 @@ public:
 				vm.installScript(hand, scriptDs);
 			if (prims)
 				vm.installPrims(prims);
+			if (graphics)
+				vm.installGraphics(*graphics);
 		}
 		for (uint i = 0; i < input.size(); i++) {
 			const Input &in = input[i];
@@ -548,6 +557,9 @@ Common::Error TadEngine::runVersion2Test() {
 			host.prims = &host.selectedPrims[0];
 		}
 	}
+	// tad_test_graphics: room picture, panel, texts and screen output in C++
+	if (ConfMan.hasKey("tad_test_graphics") && ConfMan.getBool("tad_test_graphics"))
+		host.graphics = code.graphics;
 	if (ConfMan.hasKey("tad_test_script") && ConfMan.getBool("tad_test_script")) {
 		host.scripts = code.scripts;
 		// tad_test_script_part=first,count installs only these entries of the list
