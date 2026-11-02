@@ -1,11 +1,13 @@
 MODULE := engines/tad
 
 MODULE_OBJS = \
+	commands.o \
 	console.o \
 	cpu.o \
 	dosvm.o \
 	graphics.o \
 	metaengine.o \
+	prims.o \
 	resource.o \
 	room.o \
 	runner.o \

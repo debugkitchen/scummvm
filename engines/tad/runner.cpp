@@ -25,6 +25,7 @@
 #include "common/system.h"
 
 #include "tad/detection.h"
+#include "tad/prims.h"
 #include "tad/runner.h"
 #include "tad/script.h"
 
@@ -112,7 +113,7 @@ static const uint16 kSoundStubs[] = {
 };
 
 ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host) : DosVm(files),
-	budget(3000000), _desc(desc), _host(host), _script(nullptr), _frame(0), _frameSteps(0),
+	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _frame(0), _frameSteps(0),
 	_frameBlocks(0), _error(false) {
 }
 
@@ -136,6 +137,19 @@ void ProgramVm::installScript(const ScriptFunction *list, uint16 ds) {
 	if (!_script)
 		_script = new ScriptRuntime(this, this, ds);
 	_script->install(list);
+}
+
+void ProgramVm::installPrims(const PrimAddress *list) {
+	_prims = list;
+	for (int i = 0; list[i].fn; i++)
+		setTrap(list[i].seg, list[i].off, kTrapPrim + i);
+}
+
+uint ProgramVm::primCount() const {
+	uint n = 0;
+	while (_prims && _prims[n].fn)
+		n++;
+	return n;
 }
 
 uint ProgramVm::scriptCount() const {
@@ -183,8 +197,20 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 		setYield(kYieldNone);
 		return kTrapStop;
 	default:
-		return kTrapPass;
+		break;
 	}
+	if (id >= kTrapPrim && _prims) {
+		const PrimAddress &p = _prims[id - kTrapPrim];
+		if (p.ready && !p.ready(*this, p.seg))
+			return kTrapPass;
+		PrimResult r;
+		r.ax = r16[kAX];
+		r.dx = r16[kDX];
+		p.fn(*this, p.seg, p.aux, r);
+		retf(r.ax, r.dx);
+		return kTrapContinue;
+	}
+	return kTrapPass;
 }
 
 uint32 ProgramVm::remaining() const {

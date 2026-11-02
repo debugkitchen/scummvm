@@ -38,6 +38,7 @@
 #include "tad/console.h"
 #include "tad/runner.h"
 #include "tad/script.h"
+#include "tad/prims.h"
 #include "tad/scripts.h"
 #include "tad/tad.h"
 
@@ -300,21 +301,40 @@ static void presentVm(const DosVm &vm) {
 	g_system->updateScreen();
 }
 
-/** Translated functions of a program, if the engine has them */
+/** What replaces original code in a program: translated functions and routines in C++ */
+struct ProgramCode {
+	const ScriptFunction *scripts;
+	uint16 ds;
+	const ScriptFunction *hand;
+	const PrimAddress *prims;
+};
+
+static ProgramCode programCode(const Common::String &gameId, uint program) {
+	ProgramCode c;
+	if (gameId == "bifi2") {
+		c.scripts = program ? bifi2XP01Functions : bifi2XP00Functions;
+		c.ds = program ? 0x350a : 0x1dd7;
+		c.hand = program ? bifi2XP01Hand : nullptr;
+		c.prims = program ? bifi2XP01Prims : nullptr;
+	} else {
+		c.scripts = program ? schattenXP01Functions : schattenXP00Functions;
+		c.ds = program ? 0x31ef : 0x1e3a;
+		c.hand = program ? schattenXP01Hand : nullptr;
+		c.prims = program ? schattenXP01Prims : nullptr;
+	}
+	return c;
+}
+
+/** Translated functions and routines in C++ of a program, if the engine has them */
 static void installScripts(ProgramVm &vm, const Common::String &gameId, uint program) {
 	if (ConfMan.hasKey("tad_original") && ConfMan.getBool("tad_original"))
 		return;
-	if (gameId == "bifi2") {
-		if (program == 1)
-			vm.installScript(bifi2XP01Functions, 0x350a);
-		else
-			vm.installScript(bifi2XP00Functions, 0x1dd7);
-	} else {
-		if (program == 1)
-			vm.installScript(schattenXP01Functions, 0x31ef);
-		else
-			vm.installScript(schattenXP00Functions, 0x1e3a);
-	}
+	const ProgramCode c = programCode(gameId, program);
+	vm.installScript(c.scripts, c.ds);
+	if (c.hand)
+		vm.installScript(c.hand, c.ds);
+	if (c.prims)
+		vm.installPrims(c.prims);
 }
 
 /** Play: picture, mouse, keyboard and time between two frames */
@@ -442,6 +462,9 @@ public:
 	const ScriptFunction *scripts = nullptr;
 	uint16 scriptDs = 0;
 	Common::Array<ScriptFunction> selected; ///< a part of the list (to find a faulty function)
+	const ScriptFunction *hand = nullptr;
+	const PrimAddress *prims = nullptr;
+	Common::Array<PrimAddress> selectedPrims;
 
 	void frameStart(ProgramVm &vm, int f) override {
 		for (uint i = 0; i < input.size(); i++) {
@@ -460,6 +483,10 @@ public:
 			vm.noStepTime = true;
 			if (scripts)
 				vm.installScript(scripts, scriptDs);
+			if (hand)
+				vm.installScript(hand, scriptDs);
+			if (prims)
+				vm.installPrims(prims);
 		}
 		for (uint i = 0; i < input.size(); i++) {
 			const Input &in = input[i];
@@ -501,16 +528,28 @@ Common::Error TadEngine::runVersion2Test() {
 		host.dumpFrame = ConfMan.getInt("tad_test_dump");
 		host.dumpPath = Common::FSNode(ConfMan.getPath("tad_test_output")).getParent().getChild("mem.bin").getPath();
 	}
-	if (ConfMan.hasKey("tad_test_script") && ConfMan.getBool("tad_test_script")) {
-		if (getGameId() == "bifi2") {
-			host.scripts = p ? bifi2XP01Functions : bifi2XP00Functions;
-			host.scriptDs = p ? 0x350a : 0x1dd7;
-		} else {
-			host.scripts = p ? schattenXP01Functions : schattenXP00Functions;
-			host.scriptDs = p ? 0x31ef : 0x1e3a;
+	const ProgramCode code = programCode(getGameId(), p);
+	host.scriptDs = code.ds;
+	if (ConfMan.hasKey("tad_test_script_from"))
+		host.scriptFrom = ConfMan.getInt("tad_test_script_from");
+	// tad_test_prims: the assembler routines in C++ (with the command tables)
+	if (ConfMan.hasKey("tad_test_prims") && ConfMan.getBool("tad_test_prims")) {
+		host.hand = code.hand;
+		host.prims = code.prims;
+		// tad_test_prims_part=first,count installs only these routines
+		uint first = 0, count = 0;
+		if (host.prims && ConfMan.hasKey("tad_test_prims_part") &&
+				sscanf(ConfMan.get("tad_test_prims_part").c_str(), "%u,%u", &first, &count) == 2) {
+			for (uint i = 0; host.prims[i].fn; i++)
+				if (i >= first && i < first + count)
+					host.selectedPrims.push_back(host.prims[i]);
+			const PrimAddress end = { 0, 0, nullptr, nullptr, 0 };
+			host.selectedPrims.push_back(end);
+			host.prims = &host.selectedPrims[0];
 		}
-		if (ConfMan.hasKey("tad_test_script_from"))
-			host.scriptFrom = ConfMan.getInt("tad_test_script_from");
+	}
+	if (ConfMan.hasKey("tad_test_script") && ConfMan.getBool("tad_test_script")) {
+		host.scripts = code.scripts;
 		// tad_test_script_part=first,count installs only these entries of the list
 		uint first = 0, count = 0;
 		if (ConfMan.hasKey("tad_test_script_part") &&

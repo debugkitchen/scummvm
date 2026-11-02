@@ -60,6 +60,7 @@ private:
 
 class ScriptRuntime;
 struct ScriptFunction;
+struct PrimAddress;
 class ProgramVm;
 
 /** What happens between two frames: picture, input and time (the game, or a test) */
@@ -83,7 +84,8 @@ public:
 		kTrapFrame = 1,
 		kTrapSoundOk,
 		kTrapSoundStub,
-		kTrapScript
+		kTrapScript,
+		kTrapPrim         ///< kTrapPrim + n: entry n of the routines in C++
 	};
 
 	ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host);
@@ -92,6 +94,9 @@ public:
 	/** Translated functions that replace the original code (data segment ds) */
 	void installScript(const ScriptFunction *list, uint16 ds);
 	uint scriptCount() const;
+	/** Assembler routines done in C++ that replace the original code */
+	void installPrims(const PrimAddress *list);
+	uint primCount() const;
 
 	/** Runs the program until it ends; returns false on an error */
 	bool execute();
@@ -117,6 +122,7 @@ private:
 	ProgramDesc _desc;
 	FrameHost *_host;
 	ScriptRuntime *_script;
+	const PrimAddress *_prims;
 	int _frame;
 	uint32 _frameSteps;
 	uint32 _frameBlocks;

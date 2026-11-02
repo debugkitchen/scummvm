@@ -79,6 +79,10 @@ public:
 	RunResult run(uint32 maxSteps);
 	/** A new frame: the wait detection of the timer counter starts again */
 	void resetPitReads() { _pitReads = 0; }
+	uint pitReads() const { return _pitReads; }
+	/** Port access for routines that replace original code (same effects as IN and OUT) */
+	byte inPort(uint16 port) { return in(port, false) & 0xff; }
+	void outPort(uint16 port, byte v) { out(port, v, false); }
 	/** Delivers pending timer interrupts now */
 	void serviceIrqs();
 	/** Host time in milliseconds (once per displayed frame) */
