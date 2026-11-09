@@ -87,22 +87,24 @@ inline int64 floorDiv(int64 a, int64 b) {
 // ---------------------------------------------------------------------------- Gfx
 
 uint32 Gfx::blkTarget(uint16 &width) const {
-	width = _vm.rw(_blk, 0x2f2);
-	return (uint32)lin(_vm.rw(_blk, 0x2f0), _vm.rw(_blk, 0x2ee));
+	const uint16 b = _lay.blk, t = _lay.blkTarget;
+	width = _vm.rw(b, (uint16)(t + 4));
+	return (uint32)lin(_vm.rw(b, (uint16)(t + 2)), _vm.rw(b, t));
 }
 
 void Gfx::setTarget(uint16 seg, uint16 off) {
+	const uint16 b = _lay.blk, t = _lay.blkTarget;
 	if (!seg && !off) {
-		_vm.ww(_blk, 0x2f2, 0x140);
-		_vm.ww(_blk, 0x2f4, 0xc8);
-		_vm.ww(_blk, 0x2ee, 0);
-		_vm.ww(_blk, 0x2f0, 0xa000);
+		_vm.ww(b, (uint16)(t + 4), 0x140);
+		_vm.ww(b, (uint16)(t + 6), 0xc8);
+		_vm.ww(b, t, 0);
+		_vm.ww(b, (uint16)(t + 2), 0xa000);
 		return;
 	}
-	_vm.ww(_blk, 0x2f2, _vm.rw(seg, off));
-	_vm.ww(_blk, 0x2f4, _vm.rw(seg, (uint16)(off + 2)));
-	_vm.ww(_blk, 0x2ee, _vm.rw(seg, (uint16)(off + 4)));
-	_vm.ww(_blk, 0x2f0, _vm.rw(seg, (uint16)(off + 6)));
+	_vm.ww(b, (uint16)(t + 4), _vm.rw(seg, off));
+	_vm.ww(b, (uint16)(t + 6), _vm.rw(seg, (uint16)(off + 2)));
+	_vm.ww(b, t, _vm.rw(seg, (uint16)(off + 4)));
+	_vm.ww(b, (uint16)(t + 2), _vm.rw(seg, (uint16)(off + 6)));
 }
 
 void Gfx::image(int x, int y, uint16 seg, uint16 off) {
@@ -144,27 +146,29 @@ void Gfx::setHigh(int x, int y, int w, int h, uint16 seg, uint16 off) {
 
 /** 2EA0:00F0: as the original, only one side is checked per axis; results stay in memory */
 bool Gfx::clip(int x, int y, int w, int h, Clip &c) {
-	const uint16 s = _frm;
-	const int x0 = s16(_vm.rw(s, 0xd4)), y0 = s16(_vm.rw(s, 0xd6));
-	const int x1 = s16(_vm.rw(s, 0xd8)), y1 = s16(_vm.rw(s, 0xda));
+	const uint16 s = _lay.frm;
+	// the variables relative to the window: x0 at +0 (Bi-Fi 2: 00D4)
+	auto at = [&](int bifiOffset) { return (uint16)(_lay.frmWindow + bifiOffset - 0xd4); };
+	const int x0 = s16(_vm.rw(s, at(0xd4))), y0 = s16(_vm.rw(s, at(0xd6)));
+	const int x1 = s16(_vm.rw(s, at(0xd8))), y1 = s16(_vm.rw(s, at(0xda)));
 	int ce = 0;
 	c.skipX = c.skipY = 0;
-	_vm.ww(s, 0xce, 0);
-	_vm.ww(s, 0xd0, w);
-	_vm.ww(s, 0xd2, h);
+	_vm.ww(s, at(0xce), 0);
+	_vm.ww(s, at(0xd0), w);
+	_vm.ww(s, at(0xd2), h);
 	if (x < x0) {
 		c.skipX = x0 - x;
 		c.cw = w - c.skipX;
-		_vm.ww(s, 0xc2, x0);
+		_vm.ww(s, at(0xc2), x0);
 		if (c.cw <= 0)
 			return false;
-		_vm.ww(s, 0xc6, c.skipX);
-		_vm.ww(s, 0xca, c.cw);
+		_vm.ww(s, at(0xc6), c.skipX);
+		_vm.ww(s, at(0xca), c.cw);
 		ce = 8;
 		c.cx = x0;
 	} else {
 		c.cx = x;
-		_vm.ww(s, 0xc2, x);
+		_vm.ww(s, at(0xc2), x);
 		const int bp = x1 - x - w;
 		if (bp < 0) {
 			c.cw = w + bp;
@@ -174,22 +178,22 @@ bool Gfx::clip(int x, int y, int w, int h, Clip &c) {
 		} else {
 			c.cw = w;
 		}
-		_vm.ww(s, 0xca, c.cw);
+		_vm.ww(s, at(0xca), c.cw);
 	}
-	_vm.ww(s, 0xce, ce);
+	_vm.ww(s, at(0xce), ce);
 	if (y < y0) {
 		c.skipY = y0 - y;
 		c.ch = h - c.skipY;
-		_vm.ww(s, 0xc4, y0);
+		_vm.ww(s, at(0xc4), y0);
 		if (c.ch <= 0)
 			return false;
-		_vm.ww(s, 0xc8, c.skipY);
-		_vm.ww(s, 0xcc, c.ch);
+		_vm.ww(s, at(0xc8), c.skipY);
+		_vm.ww(s, at(0xcc), c.ch);
 		ce += 2;
 		c.cy = y0;
 	} else {
 		c.cy = y;
-		_vm.ww(s, 0xc4, y);
+		_vm.ww(s, at(0xc4), y);
 		const int bp = y1 - y - h;
 		if (bp < 0) {
 			c.ch = h + bp;
@@ -199,9 +203,9 @@ bool Gfx::clip(int x, int y, int w, int h, Clip &c) {
 		} else {
 			c.ch = h;
 		}
-		_vm.ww(s, 0xcc, c.ch);
+		_vm.ww(s, at(0xcc), c.ch);
 	}
-	_vm.ww(s, 0xce, ce);
+	_vm.ww(s, at(0xce), ce);
 	return true;
 }
 
@@ -216,8 +220,9 @@ bool Gfx::frame(int x, int y, uint16 seg, uint16 off) {
 	Clip c;
 	if (!clip(x, y, f->w, f->h, c))
 		return false;
-	const int tw = _vm.rw(_frm, 0xdc);
-	const int64 t = lin(_vm.rw(_frm, 0xe2), _vm.rw(_frm, 0xe0));
+	const uint16 win = _lay.frmWindow;
+	const int tw = _vm.rw(_lay.frm, (uint16)(win + 8));
+	const int64 t = lin(_vm.rw(_lay.frm, (uint16)(win + 0xe)), _vm.rw(_lay.frm, (uint16)(win + 0xc)));
 	for (int r = 0; r < c.ch; r++) {
 		const int fr = (c.skipY + r) * f->w + c.skipX;
 		const int64 d = t + (int64)(c.cy + r) * tw + c.cx;
@@ -277,7 +282,7 @@ void Gfx::recolor(uint16 seg, uint16 off, byte d) {
 }
 
 uint16 Gfx::glyphWidth(uint ch) {
-	const uint16 fs = _vm.rw(_frm, 0xf72), fo = _vm.rw(_frm, 0xf70);
+	const uint16 fs = _vm.rw(_lay.frm, (uint16)(_lay.frmFont + 4)), fo = _vm.rw(_lay.frm, (uint16)(_lay.frmFont + 2));
 	const uint first = _vm.rw(fs, (uint16)(fo + 2)), n = _vm.rw(fs, (uint16)(fo + 4));
 	if (ch < first || ch - first >= n)
 		return 0;
@@ -285,7 +290,7 @@ uint16 Gfx::glyphWidth(uint ch) {
 }
 
 int Gfx::text(int x, int y, const byte *codes, uint n) {
-	const uint16 fs = _vm.rw(_frm, 0xf72), fo = _vm.rw(_frm, 0xf70);
+	const uint16 fs = _vm.rw(_lay.frm, (uint16)(_lay.frmFont + 4)), fo = _vm.rw(_lay.frm, (uint16)(_lay.frmFont + 2));
 	const byte first = _vm.rb(fs, (uint16)(fo + 2)), count = _vm.rb(fs, (uint16)(fo + 4));
 	for (uint i = 0; i < n; i++) {
 		const byte ch = codes[i];
@@ -297,12 +302,12 @@ int Gfx::text(int x, int y, const byte *codes, uint n) {
 		const uint16 e = (uint16)(fo + 10 + k * 8);
 		if (!_vm.rb(fs, e))
 			continue;
-		const byte cur = _vm.rb(_frm, 0xf6e), old = _vm.rb(fs, (uint16)(e + 1));
+		const byte cur = _vm.rb(_lay.frm, _lay.frmFont), old = _vm.rb(fs, (uint16)(e + 1));
 		_vm.wb(fs, (uint16)(e + 1), cur);
 		const uint16 go = (uint16)(_vm.rw(fs, (uint16)(e + 6)) + fo + 10);
 		if (old != cur)
 			recolor(fs, go, cur - old);
-		const int adv = s8(_vm.rb(_frm, 0xf6f)) + _vm.rw(fs, go);
+		const int adv = s8(_vm.rb(_lay.frm, (uint16)(_lay.frmFont + 1))) + _vm.rw(fs, go);
 		frame(x, y, fs, go);
 		x += adv;
 	}
@@ -736,11 +741,51 @@ static FramePtr scaleFrame(const Frame &f, int sx, int sy, int limit) {
 	return out;
 }
 
+uint16 scaleRawFrame(DosVm &vm, uint16 fs, uint16 fo, int sx, int sy, uint16 bs, uint16 bo, uint16 size) {
+	byte *m = vm.mem();
+	vm.ww(bs, bo, 0xffff);
+	vm.ww(bs, (uint16)(bo + 2), 0xffff);
+	Frame src;
+	src.w = vm.rw(fs, fo);
+	src.h = vm.rw(fs, (uint16)(fo + 2));
+	const int64 dw = ((int64)ABS(sx) * src.w + 0x7f) >> 8;
+	if (dw > 0xffff)
+		return 0;
+	vm.ww(bs, bo, (uint16)dw);
+	const int64 dh = ((int64)ABS(sy) * src.h + 0x7f) >> 8;
+	if (dh > 0xffff)
+		return 0;
+	vm.ww(bs, (uint16)(bo + 2), (uint16)dh);
+	if (!dw || !dh || dw * dh + 8 > size)
+		return 0;
+	// the original reads the pixels as they are (raw frames only)
+	const uint32 n = (uint32)src.w * src.h;
+	src.pixels.resize(n);
+	src.mask.resize(n);
+	const int64 p = lin(fs, (int64)fo + 8);
+	for (uint32 i = 0; i < n; i++) {
+		src.pixels[i] = readMem(m, p + i);
+		src.mask[i] = 1;
+	}
+	FramePtr f = scaleFrame(src, sx, sy, size);
+	if (!f)
+		return 0;
+	vm.ww(bs, (uint16)(bo + 4), vm.rw(fs, (uint16)(fo + 4)));
+	vm.ww(bs, (uint16)(bo + 6), vm.rw(fs, (uint16)(fo + 6)));
+	const int64 d = lin(bs, (int64)bo + 8);
+	for (uint i = 0; i < f->pixels.size(); i++)
+		writeMem(m, d + i, f->pixels[i]);
+	return (uint16)(dw * dh + 8);
+}
+
 // ---------------------------------------------------------------------------- EngineGraphics
+
+const GfxLayout bifi2XP01Layout = { 0x2b72, 0x02ee, 0x2ea0, 0x00d4, 0x0f6e };
+const GfxLayout schattenXP01Layout = { 0x2afa, 0x0284, 0x2601, 0x011c, 0x13c6 };
 
 const GraphicsDesc bifi2XP01Graphics = {
 	0x350a,
-	0x2b72, 0x2ea0, 0x2c3c, 0x330b, 0x2819,
+	&bifi2XP01Layout, 0x2c3c, 0x330b, 0x2819,
 	0x2cfc, 0x2d24, 0x2cf4, 0x2cf2, 0x2d1c, 0x165c, 0x2cee,
 	0x16e3, 0x01e1,
 	0x1751, 0x0067,
@@ -749,7 +794,7 @@ const GraphicsDesc bifi2XP01Graphics = {
 };
 
 EngineGraphics::EngineGraphics(ProgramVm &vm, const GraphicsDesc &desc) : _vm(vm), _desc(desc),
-	_gfx(vm, desc.blk, desc.frm), _dirty(vm, desc.dirty) {
+	_gfx(vm, *desc.layout), _dirty(vm, desc.dirty) {
 }
 
 uint16 EngineGraphics::w(uint16 off) const {

@@ -28,6 +28,7 @@ namespace Tad {
 
 class DosVm;
 class ScriptRuntime;
+struct GfxLayout;
 struct ScriptFunction;
 
 /** AX and DX of a routine that returns with RETF */
@@ -39,11 +40,12 @@ struct PrimResult {
 /**
  * A hand-written assembler routine of the second engine generation done in C++. It gets the
  * machine at the entry of the far routine (return address at SS:SP, arguments after it), the
- * segment of its library and, for some, a second segment; it changes memory, ports and the
+ * segment of its library and, for the graphics routines, where the library keeps its
+ * variables; it changes memory, ports and the
  * direction flag exactly as the original does and sets AX and DX as the original leaves them
  * (r holds AX and DX at the entry).
  */
-typedef void (*PrimFunc)(DosVm &vm, uint16 cs, uint16 aux, PrimResult &r);
+typedef void (*PrimFunc)(DosVm &vm, uint16 cs, const GfxLayout *lay, PrimResult &r);
 /** False where the original would be interrupted in the middle: then the 8086 code runs */
 typedef bool (*PrimReady)(DosVm &vm, uint16 cs);
 
@@ -53,7 +55,7 @@ struct PrimAddress {
 	uint16 off;
 	PrimFunc fn;
 	PrimReady ready;   ///< nullptr: always
-	uint16 aux;
+	const GfxLayout *layout;
 };
 
 extern const PrimAddress bifi2XP01Prims[];

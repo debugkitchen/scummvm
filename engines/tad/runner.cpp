@@ -306,7 +306,7 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 		PrimResult r;
 		r.ax = r16[kAX];
 		r.dx = r16[kDX];
-		p.fn(*this, p.seg, p.aux, r);
+		p.fn(*this, p.seg, p.layout, r);
 		retf(r.ax, r.dx);
 		return kTrapContinue;
 	}

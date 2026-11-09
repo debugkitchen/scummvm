@@ -552,7 +552,7 @@ Common::Error TadEngine::runVersion2Test() {
 			for (uint i = 0; host.prims[i].fn; i++)
 				if (i >= first && i < first + count)
 					host.selectedPrims.push_back(host.prims[i]);
-			const PrimAddress end = { 0, 0, nullptr, nullptr, 0 };
+			const PrimAddress end = { 0, 0, nullptr, nullptr, nullptr };
 			host.selectedPrims.push_back(end);
 			host.prims = &host.selectedPrims[0];
 		}

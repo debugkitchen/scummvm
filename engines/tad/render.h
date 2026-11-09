@@ -36,14 +36,30 @@ class ProgramVm;
  * memory of the program: the picture buffer, the clipping window and the font are where the
  * original keeps them, so original and C++ code draw into the same picture.
  *
- * Library variables (Bi-Fi 2): blk:02EE far pointer to the target of the block routines,
- * blk:02F2 its width; frm:00E0 far pointer to the target of the frame routine, frm:00DC its
- * width, frm:00D4/D6/D8/DA clipping window x0, y0, x1, y1 (exclusive), frm:0F6E text colour,
- * frm:0F6F extra spacing, frm:0F70 far pointer to the font.
+ * Library variables (offsets of Bi-Fi 2): blk:02EE far pointer to the target of the block
+ * routines, blk:02F2 its width; frm:00E0 far pointer to the target of the frame routine,
+ * frm:00DC its width, frm:00D4/D6/D8/DA clipping window x0, y0, x1, y1 (exclusive), frm:0F6E
+ * text colour, frm:0F6F extra spacing, frm:0F70 far pointer to the font.
  */
+/**
+ * Where a version of the graphics library keeps its variables: the block routines (blk) and
+ * the frame and font routines (frm). Dunkle Schatten uses the same code with other offsets.
+ */
+struct GfxLayout {
+	uint16 blk;
+	uint16 blkTarget;   ///< far pointer to the target, then its width and height (Bi-Fi 2: 02EE)
+	uint16 frm;
+	uint16 frmWindow;   ///< clipping window x0, y0, x1, y1, then target width, height, far pointer (00D4);
+	                    ///< the results of the clipping are in the 18 bytes before it
+	uint16 frmFont;     ///< text colour, extra spacing, far pointer to the font (0F6E)
+};
+
+extern const GfxLayout bifi2XP01Layout;
+extern const GfxLayout schattenXP01Layout;
+
 class Gfx {
 public:
-	Gfx(DosVm &vm, uint16 blk, uint16 frm) : _vm(vm), _blk(blk), _frm(frm) {}
+	Gfx(DosVm &vm, const GfxLayout &layout) : _vm(vm), _lay(layout) {}
 
 	/** 2B72:0224: target of the block routines (null = the screen) */
 	void setTarget(uint16 seg, uint16 off);
@@ -71,8 +87,7 @@ private:
 	uint32 blkTarget(uint16 &width) const;
 
 	DosVm &_vm;
-	uint16 _blk;
-	uint16 _frm;
+	const GfxLayout &_lay;
 };
 
 /**
@@ -106,10 +121,18 @@ private:
 	uint16 _seg;
 };
 
+/**
+ * 27C7:0470 (Bi-Fi 2) / 2750:0430 (Dunkle Schatten): scaled copy of a raw frame into a work
+ * buffer of size bytes, mirrored for a negative scale; returns its size (w * h + 8), 0 where the
+ * original fails. The header gets 0xFFFF, then the new width and height as far as they fit.
+ */
+uint16 scaleRawFrame(DosVm &vm, uint16 fs, uint16 fo, int sx, int sy, uint16 bs, uint16 bo, uint16 size);
+
 /** Addresses of the drawing code of a program and of the state it works on */
 struct GraphicsDesc {
 	uint16 ds;
-	uint16 blk, frm, dirty, txt, mouseLib;    ///< library segments
+	const GfxLayout *layout;
+	uint16 dirty, txt, mouseLib;              ///< library segments
 	uint16 room, frameLists, scaleBuf, scaleBufSize, drawHook, tileBuf, clip;   ///< DS words of the room
 	uint16 roomSeg, roomOff;                  ///< the original routines that are replaced
 	uint16 panelSeg, panelOff;
