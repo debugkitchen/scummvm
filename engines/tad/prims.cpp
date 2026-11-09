@@ -1715,4 +1715,39 @@ const PrimAddress schattenXP01Prims[] = {
 	{ 0, 0, nullptr, nullptr, nullptr }
 };
 
+// Telekommando 2: the routines that are byte for byte the same as in Bi-Fi 2
+const PrimAddress tk2XP01Prims[] = {
+	{ 0x1a1f, 0x0046, fadeStep, nullptr, nullptr },
+	{ 0x1a1f, 0x013f, remapCopy, nullptr, nullptr },
+	{ 0x1a1f, 0x019e, mosaic, nullptr, nullptr },
+	{ 0x26a0, 0x0000, ribInPlace, nullptr, nullptr },
+	{ 0x2458, 0x1fa4, cellsClear, nullptr, nullptr },
+	{ 0x2458, 0x1fc4, cellsAll, nullptr, nullptr },
+	{ 0x2458, 0x2036, cellsMark, nullptr, nullptr },
+	{ 0x2458, 0x2063, cellsOr, nullptr, nullptr },
+	{ 0x2458, 0x2094, cellsMark3, nullptr, nullptr },
+	{ 0x2458, 0x20c1, cellsTest, nullptr, nullptr },
+	{ 0x2458, 0x21ea, cellsRuns, nullptr, nullptr },
+	{ 0x2458, 0x226e, cellsCopy, nullptr, nullptr },
+	{ 0x2458, 0x23c0, cellsTiles, nullptr, nullptr },
+	{ 0x26bc, 0x0e1e, frmWindowPtr, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x108c, frmFontPtr, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x0e24, frmWindow, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x0e5f, frmDraw, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x0f8f, frmText, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x0f74, frmChar, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x100d, frmTextWidth, nullptr, &tk2XP01Layout },
+	{ 0x26bc, 0x1062, frmGlyphWidth, nullptr, &tk2XP01Layout },
+	{ 0x2383, 0x019a, blkRetrace, nullptr, nullptr },
+	{ 0x1085, 0x0008, palSet, nullptr, nullptr },
+	{ 0x1085, 0x002b, palScale, nullptr, nullptr },
+	{ 0x1085, 0x0147, palRelocList, nullptr, nullptr },
+	{ 0x1085, 0x01c9, palRelocN, nullptr, nullptr },
+	{ 0x1085, 0x0220, palHugeAdd, nullptr, nullptr },
+	{ 0x1085, 0x0243, palHugeCopy, nullptr, nullptr },
+	{ 0x2872, 0x0004, rtlMemset, nullptr, nullptr },
+	{ 0x2872, 0x0022, rtlMemcpy, nullptr, nullptr },
+	{ 0, 0, nullptr, nullptr, nullptr }
+};
+
 } // End of namespace Tad

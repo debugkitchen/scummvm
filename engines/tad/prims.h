@@ -60,6 +60,7 @@ struct PrimAddress {
 
 extern const PrimAddress bifi2XP01Prims[];
 extern const PrimAddress schattenXP01Prims[];
+extern const PrimAddress tk2XP01Prims[];
 
 /** Routines that call back into the game (command tables), run as translated functions */
 extern const ScriptFunction bifi2XP01Hand[];

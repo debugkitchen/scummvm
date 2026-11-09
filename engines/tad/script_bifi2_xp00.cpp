@@ -367,16 +367,16 @@ L11:
 L12:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v5);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v5;
+	if (sv == 0x0)
 		goto L14;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L15;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L16;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L17;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L18;
 	s.fail("switch without case in 105c:00e4");
 	goto Lend;
@@ -442,16 +442,16 @@ L23:
 L24:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v5);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v5;
+	if (sv == 0x0)
 		goto L26;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L27;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L28;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L29;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L30;
 	s.fail("switch without case in 105c:00e4");
 	goto Lend;
@@ -1159,14 +1159,14 @@ L45:
 	v_v47 = v_v43;
 	v_v48 = v_v43;
 	v_v45 = v_v43;
-	sv = sx16(v_v42);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 5 || (sv & 0xffff) == 5)
+	sv = v_v42;
+	if (sv == 0x0 || sv == 0x5)
 		goto L47;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L48;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L49;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L50;
 	s.fail("switch without case in 1076:0002");
 	goto Lend;
@@ -9644,18 +9644,18 @@ L4:
 	v_v34 = v_v5;
 	v_v36 = v_v4;
 	v_v37 = v_v5;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65532)));
-	if (sv == 42 || (sv & 0xffff) == 42 || sv == 43 || (sv & 0xffff) == 43 || sv == 45 || (sv & 0xffff) == 45)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65532));
+	if (sv == 0x2a || sv == 0x2b || sv == 0x2d)
 		goto L7;
-	if (sv == 46 || (sv & 0xffff) == 46)
+	if (sv == 0x2e)
 		goto L8;
-	if (sv == 47 || (sv & 0xffff) == 47)
+	if (sv == 0x2f)
 		goto L9;
-	if (sv == 99 || (sv & 0xffff) == 99)
+	if (sv == 0x63)
 		goto L10;
-	if (sv == 110 || (sv & 0xffff) == 110)
+	if (sv == 0x6e)
 		goto L11;
-	if (sv == 112 || (sv & 0xffff) == 112)
+	if (sv == 0x70)
 		goto L12;
 	goto L13;
 L5:

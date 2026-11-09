@@ -782,6 +782,8 @@ uint16 scaleRawFrame(DosVm &vm, uint16 fs, uint16 fo, int sx, int sy, uint16 bs,
 
 const GfxLayout bifi2XP01Layout = { 0x2b72, 0x02ee, 0x2ea0, 0x00d4, 0x0f6e };
 const GfxLayout schattenXP01Layout = { 0x2afa, 0x0284, 0x2601, 0x011c, 0x13c6 };
+// Telekommando 2: the frame library of Bi-Fi 2 (its block library is another build, not used here)
+const GfxLayout tk2XP01Layout = { 0x2383, 0x02ee, 0x26bc, 0x00d4, 0x0f6e };
 
 const GraphicsDesc bifi2XP01Graphics = {
 	0x350a,

@@ -1056,12 +1056,12 @@ L8:
 	v_v7 = v_v6;
 	v_v4 = v_v6;
 	v_v8 = v_v6;
-	sv = sx16(v_v5);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	sv = v_v5;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L12;
 	s.fail("switch without case in 1060:04bf");
 	goto Lend;
@@ -1353,14 +1353,14 @@ L2:
 	v_v3 = s.rw(fr.ss, (uint16)(fr.ab + 4));
 	s.ww(fr.ss, (uint16)(fr.ab + 4), (uint16)(s.rw(fr.ss, (uint16)(fr.ab + 4)) + 1));
 	s.ww(fr.ss, (uint16)(fr.bp + 65534), s.rb(s.rw(fr.ss, (uint16)(fr.ab + 6)), (uint16)((uint16)(0 + v_v3))));
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 97 || (sv & 0xffff) == 97)
+	if (sv == 0x61)
 		goto L6;
-	if (sv == 98 || (sv & 0xffff) == 98)
+	if (sv == 0x62)
 		goto L12;
-	if (sv == 99 || (sv & 0xffff) == 99)
+	if (sv == 0x63)
 		goto L18;
 	goto L24;
 L3:
@@ -2298,14 +2298,14 @@ L45:
 	v_v47 = v_v43;
 	v_v48 = v_v43;
 	v_v45 = v_v43;
-	sv = sx16(v_v42);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 5 || (sv & 0xffff) == 5)
+	sv = v_v42;
+	if (sv == 0x0 || sv == 0x5)
 		goto L47;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L48;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L49;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L50;
 	s.fail("switch without case in 1104:000a");
 	goto Lend;
@@ -2591,14 +2591,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
 	s.fail("switch without case in 1104:0640");
 	goto Lend;
@@ -7950,18 +7950,18 @@ L4:
 	v_v34 = v_v5;
 	v_v36 = v_v4;
 	v_v37 = v_v5;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65532)));
-	if (sv == 42 || (sv & 0xffff) == 42 || sv == 43 || (sv & 0xffff) == 43 || sv == 45 || (sv & 0xffff) == 45)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65532));
+	if (sv == 0x2a || sv == 0x2b || sv == 0x2d)
 		goto L7;
-	if (sv == 46 || (sv & 0xffff) == 46)
+	if (sv == 0x2e)
 		goto L8;
-	if (sv == 47 || (sv & 0xffff) == 47)
+	if (sv == 0x2f)
 		goto L9;
-	if (sv == 99 || (sv & 0xffff) == 99)
+	if (sv == 0x63)
 		goto L10;
-	if (sv == 110 || (sv & 0xffff) == 110)
+	if (sv == 0x6e)
 		goto L11;
-	if (sv == 112 || (sv & 0xffff) == 112)
+	if (sv == 0x70)
 		goto L12;
 	goto L13;
 L5:
@@ -13594,28 +13594,28 @@ L4:
 	v_v38 = v_v8;
 	v_v40 = v_v10;
 	v_v41 = v_v10;
-	sv = sx16(v_v7);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v7;
+	if (sv == 0x0)
 		goto L7;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L8;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L12;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L19;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L29;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L30;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L31;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L35;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L36;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L37;
-	if (sv == 10 || (sv & 0xffff) == 10)
+	if (sv == 0xa)
 		goto L38;
 	s.fail("switch without case in 13f7:011c");
 	goto Lend;
@@ -14601,14 +14601,14 @@ L8:
 		goto Lend;
 	v_v22 = v_v18;
 	v_v25 = v_v18;
-	sv = sx16(v_v17);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v17;
+	if (sv == 0x0)
 		goto L11;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L12;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L16;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L25;
 	s.fail("switch without case in 13f7:0436");
 	goto Lend;
@@ -15476,20 +15476,20 @@ L19:
 	v_v77 = v_v49;
 	v_v80 = v_v48;
 	v_v81 = v_v49;
-	sv = sx16(v_v45);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v45;
+	if (sv == 0x0)
 		goto L22;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L23;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L58;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L93;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L97;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L101;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L105;
 	s.fail("switch without case in 13f7:05f2");
 	goto Lend;
@@ -15551,16 +15551,16 @@ L25:
 	v_v111 = v_v94;
 	v_v112 = v_v93;
 	v_v113 = v_v94;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65518)));
-	if (sv == 128 || (sv & 0xffff) == 128)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65518));
+	if (sv == 0x80)
 		goto L28;
-	if (sv == 136 || (sv & 0xffff) == 136)
+	if (sv == 0x88)
 		goto L37;
-	if (sv == 144 || (sv & 0xffff) == 144)
+	if (sv == 0x90)
 		goto L38;
-	if (sv == 152 || (sv & 0xffff) == 152)
+	if (sv == 0x98)
 		goto L39;
-	if (sv == 160 || (sv & 0xffff) == 160)
+	if (sv == 0xa0)
 		goto L46;
 	goto L57;
 L26:
@@ -15619,14 +15619,14 @@ L30:
 	v_v132 = v_v118;
 	v_v135 = v_v117;
 	v_v136 = v_v118;
-	sv = sx16(v_v115);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v115;
+	if (sv == 0x0)
 		goto L33;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L34;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x2 || sv == 0x4)
 		goto L35;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x3 || sv == 0x5)
 		goto L36;
 	s.fail("switch without case in 13f7:05f2");
 	goto Lend;
@@ -15870,18 +15870,18 @@ L48:
 	v_v220 = v_v198;
 	v_v223 = v_v197;
 	v_v224 = v_v198;
-	sv = sx16(v_v195);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v195;
+	if (sv == 0x0)
 		goto L51;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L52;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L53;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L54;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L55;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L56;
 	s.fail("switch without case in 13f7:05f2");
 	goto Lend;
@@ -16092,16 +16092,16 @@ L60:
 	v_v111 = v_v94;
 	v_v112 = v_v93;
 	v_v113 = v_v94;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65518)));
-	if (sv == 128 || (sv & 0xffff) == 128)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65518));
+	if (sv == 0x80)
 		goto L63;
-	if (sv == 136 || (sv & 0xffff) == 136)
+	if (sv == 0x88)
 		goto L72;
-	if (sv == 144 || (sv & 0xffff) == 144)
+	if (sv == 0x90)
 		goto L73;
-	if (sv == 152 || (sv & 0xffff) == 152)
+	if (sv == 0x98)
 		goto L74;
-	if (sv == 160 || (sv & 0xffff) == 160)
+	if (sv == 0xa0)
 		goto L81;
 	goto L92;
 L61:
@@ -16160,14 +16160,14 @@ L65:
 	v_v132 = v_v118;
 	v_v135 = v_v117;
 	v_v136 = v_v118;
-	sv = sx16(v_v115);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v115;
+	if (sv == 0x0)
 		goto L68;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L69;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x2 || sv == 0x4)
 		goto L70;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x3 || sv == 0x5)
 		goto L71;
 	s.fail("switch without case in 13f7:05f2");
 	goto Lend;
@@ -16411,18 +16411,18 @@ L83:
 	v_v220 = v_v198;
 	v_v223 = v_v197;
 	v_v224 = v_v198;
-	sv = sx16(v_v195);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v195;
+	if (sv == 0x0)
 		goto L86;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L87;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L88;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L89;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L90;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L91;
 	s.fail("switch without case in 13f7:05f2");
 	goto Lend;
@@ -17339,16 +17339,16 @@ L6:
 	v_v8 = v_v13;
 	v_v27 = v_v11;
 	v_v29 = v_v13;
-	sv = sx16(v_v10);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 9 || (sv & 0xffff) == 9)
+	sv = v_v10;
+	if (sv == 0x0 || sv == 0x9)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0xa || sv == 0xb)
 		goto L10;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L11;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L12;
 	s.fail("switch without case in 13f7:0d7d");
 	goto Lend;
@@ -17571,18 +17571,18 @@ L5:
 	v_v20 = v_v12;
 	v_v28 = v_v10;
 	v_v30 = v_v12;
-	sv = sx16(v_v9);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v9;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0xa || sv == 0xb)
 		goto L10;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L11;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L15;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L16;
 	s.fail("switch without case in 13f7:0e66");
 	goto Lend;
@@ -19246,18 +19246,18 @@ L2:
 	v_v18 = v_v5;
 	v_v21 = v_v5;
 	v_v24 = v_v5;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v3;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L9;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L10;
 	s.fail("switch without case in 13f7:16ae");
 	goto Lend;
@@ -19426,12 +19426,12 @@ L3:
 	v_v21 = v_v12;
 	v_v17 = v_v12;
 	v_v17 = v_v12;
-	sv = sx16(v_v10);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	sv = v_v10;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x4 || sv == 0x5)
 		goto L5;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L6;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L7;
 	s.fail("switch without case in 13f7:179e");
 	goto Lend;
@@ -20496,20 +20496,20 @@ L58:
 	v_v291 = v_v220;
 	v_v293 = v_v222;
 	v_v294 = v_v223;
-	sv = sx16(v_v219);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v219;
+	if (sv == 0x0)
 		goto L78;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L79;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L98;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L120;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L139;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L161;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L180;
 	s.fail("switch without case in 13f7:18ce");
 	goto Lend;
@@ -23521,10 +23521,10 @@ L2:
 L3:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v4);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1)
+	sv = v_v4;
+	if (sv == 0x0 || sv == 0x1)
 		goto L5;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x2 || sv == 0x3)
 		goto L6;
 	s.fail("switch without case in 15dc:025e");
 	goto Lend;
@@ -24659,8 +24659,8 @@ L21:
 	v_v65 = v_v59;
 	v_v64 = v_v58;
 	v_v65 = v_v59;
-	sv = sx16(v_v57);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v57;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L23;
 	s.fail("switch without case in 15dc:05c8");
 	goto Lend;
@@ -25646,14 +25646,14 @@ L48:
 	v_v176 = v_v168;
 	v_v175 = v_v167;
 	v_v176 = v_v168;
-	sv = sx16(v_v165);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v165;
+	if (sv == 0x0)
 		goto L51;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L52;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L53;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x3 || sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7)
 		goto L54;
 	s.fail("switch without case in 15dc:0838");
 	goto Lend;
@@ -28932,12 +28932,12 @@ L5:
 	v_v22 = v_v10;
 	v_v23 = v_v11;
 	v_v24 = v_v12;
-	sv = sx16(v_v9);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v9;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L45;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L46;
 	s.fail("switch without case in 1751:0673");
 	goto Lend;
@@ -29024,16 +29024,16 @@ L9:
 	v_v58 = v_v31;
 	v_v59 = v_v32;
 	v_v60 = v_v33;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65528)));
-	if (sv == 48 || (sv & 0xffff) == 48 || sv == 81 || (sv & 0xffff) == 81 || sv == 113 || (sv & 0xffff) == 113)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65528));
+	if (sv == 0x30 || sv == 0x51 || sv == 0x71)
 		goto L21;
-	if (sv == 49 || (sv & 0xffff) == 49 || sv == 50 || (sv & 0xffff) == 50 || sv == 51 || (sv & 0xffff) == 51 || sv == 52 || (sv & 0xffff) == 52 || sv == 53 || (sv & 0xffff) == 53 || sv == 54 || (sv & 0xffff) == 54 || sv == 55 || (sv & 0xffff) == 55 || sv == 56 || (sv & 0xffff) == 56)
+	if (sv == 0x31 || sv == 0x32 || sv == 0x33 || sv == 0x34 || sv == 0x35 || sv == 0x36 || sv == 0x37 || sv == 0x38)
 		goto L22;
-	if (sv == 57 || (sv & 0xffff) == 57 || sv == 87 || (sv & 0xffff) == 87 || sv == 119 || (sv & 0xffff) == 119)
+	if (sv == 0x39 || sv == 0x57 || sv == 0x77)
 		goto L23;
-	if (sv == 66 || (sv & 0xffff) == 66 || sv == 98 || (sv & 0xffff) == 98)
+	if (sv == 0x42 || sv == 0x62)
 		goto L24;
-	if (sv == 262 || (sv & 0xffff) == 262)
+	if (sv == 0x106)
 		goto L28;
 	goto L41;
 L10:
@@ -31337,14 +31337,14 @@ L11:
 	v_v30 = v_v26;
 	v_v31 = v_v28;
 	v_v32 = v_v29;
-	sv = sx16(v_v25);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 13 || (sv & 0xffff) == 13)
+	sv = v_v25;
+	if (sv == 0x0 || sv == 0xd)
 		goto L13;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L14;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L15;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8 || sv == 9 || (sv & 0xffff) == 9 || sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11 || sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0x8 || sv == 0x9 || sv == 0xa || sv == 0xb || sv == 0xc)
 		goto L33;
 	s.fail("switch without case in 180c:01b6");
 	goto Lend;
@@ -31410,14 +31410,14 @@ L18:
 	v_v78 = v_v51;
 	v_v80 = v_v53;
 	v_v81 = v_v54;
-	sv = sx16(v_v50);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v50;
+	if (sv == 0x0)
 		goto L23;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L27;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L31;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L32;
 	s.fail("switch without case in 180c:01b6");
 	goto Lend;
@@ -31700,14 +31700,14 @@ L1:
 	v_v101 = v_v22;
 	v_v102 = v_v23;
 	v_v103 = v_v24;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65520)));
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65520));
+	if (sv == 0x0)
 		goto L30;
-	if (sv == 16 || (sv & 0xffff) == 16)
+	if (sv == 0x10)
 		goto L31;
-	if (sv == 32 || (sv & 0xffff) == 32)
+	if (sv == 0x20)
 		goto L32;
-	if (sv == 48 || (sv & 0xffff) == 48)
+	if (sv == 0x30)
 		goto L33;
 	goto L34;
 L2:
@@ -31723,12 +31723,12 @@ L2:
 	v_v15 = v_v2;
 	v_v16 = v_v4;
 	v_v17 = v_v5;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L6;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L28;
 	s.fail("switch without case in 180c:02a4");
 	goto Lend;
@@ -34879,14 +34879,14 @@ L3:
 	v_v93 = v_v4;
 	v_v94 = v_v6;
 	v_v2 = v_v6;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v3;
+	if (sv == 0x0)
 		goto L59;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x5)
 		goto L60;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L100;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x3 || sv == 0x4)
 		goto L101;
 	s.fail("switch without case in 180c:0f22");
 	goto Lend;
@@ -35030,12 +35030,12 @@ L20:
 	v_v40 = v_v34;
 	v_v38 = v_v32;
 	v_v40 = v_v34;
-	sv = sx16(v_v31);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v31;
+	if (sv == 0x0)
 		goto L23;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L35;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L36;
 	s.fail("switch without case in 180c:0f22");
 	goto Lend;
@@ -35061,12 +35061,12 @@ L23:
 	v_v49 = v_v37;
 	v_v28 = v_v35;
 	v_v30 = v_v37;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65530)));
-	if (sv == 32 || (sv & 0xffff) == 32 || sv == 257 || (sv & 0xffff) == 257)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65530));
+	if (sv == 0x20 || sv == 0x101)
 		goto L25;
-	if (sv == 261 || (sv & 0xffff) == 261)
+	if (sv == 0x105)
 		goto L26;
-	if (sv == 262 || (sv & 0xffff) == 262)
+	if (sv == 0x106)
 		goto L30;
 	goto L34;
 L24:
@@ -35454,12 +35454,12 @@ L77:
 	v_v40 = v_v34;
 	v_v38 = v_v32;
 	v_v40 = v_v34;
-	sv = sx16(v_v31);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v31;
+	if (sv == 0x0)
 		goto L80;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L92;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L93;
 	s.fail("switch without case in 180c:0f22");
 	goto Lend;
@@ -35485,12 +35485,12 @@ L80:
 	v_v49 = v_v37;
 	v_v28 = v_v35;
 	v_v30 = v_v37;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65530)));
-	if (sv == 32 || (sv & 0xffff) == 32 || sv == 257 || (sv & 0xffff) == 257)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65530));
+	if (sv == 0x20 || sv == 0x101)
 		goto L82;
-	if (sv == 261 || (sv & 0xffff) == 261)
+	if (sv == 0x105)
 		goto L83;
-	if (sv == 262 || (sv & 0xffff) == 262)
+	if (sv == 0x106)
 		goto L87;
 	goto L91;
 L81:
@@ -35661,12 +35661,12 @@ L103:
 	v_v103 = v_v99;
 	v_v102 = v_v98;
 	v_v103 = v_v99;
-	sv = sx16(v_v97);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v97;
+	if (sv == 0x0)
 		goto L106;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L125;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L126;
 	s.fail("switch without case in 180c:0f22");
 	goto Lend;
@@ -36219,18 +36219,18 @@ L23:
 	v_v39 = v_v29;
 	v_v40 = v_v28;
 	v_v41 = v_v29;
-	sv = sx16(v_v27);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v27;
+	if (sv == 0x0)
 		goto L26;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L28;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L29;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L33;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L41;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L88;
 	s.fail("switch without case in 180c:1109");
 	goto Lend;
@@ -36772,14 +36772,14 @@ L97:
 	v_v113 = v_v111;
 	v_v114 = v_v111;
 	v_v115 = v_v111;
-	sv = sx16(v_v110);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v110;
+	if (sv == 0x0)
 		goto L100;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L101;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L106;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L110;
 	s.fail("switch without case in 180c:1109");
 	goto Lend;
@@ -39728,14 +39728,14 @@ L16:
 	v_v45 = v_v30;
 	v_v46 = v_v31;
 	v_v47 = v_v32;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65524)));
-	if (sv == 256 || (sv & 0xffff) == 256)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65524));
+	if (sv == 0x100)
 		goto L19;
-	if (sv == 257 || (sv & 0xffff) == 257)
+	if (sv == 0x101)
 		goto L20;
-	if (sv == 514 || (sv & 0xffff) == 514)
+	if (sv == 0x202)
 		goto L24;
-	if (sv == 515 || (sv & 0xffff) == 515)
+	if (sv == 0x203)
 		goto L25;
 	goto L26;
 L17:
@@ -39918,8 +39918,8 @@ L40:
 	v_v75 = v_v73;
 	v_v74 = v_v72;
 	v_v75 = v_v73;
-	sv = sx16(v_v71);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v71;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L42;
 	s.fail("switch without case in 19b6:04ca");
 	goto Lend;
@@ -41073,16 +41073,16 @@ L3:
 	v_v13 = v_v3;
 	v_v14 = v_v1;
 	v_v15 = v_v3;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L9;
 	s.fail("switch without case in 19b6:085e");
 	goto Lend;
@@ -41723,12 +41723,12 @@ L2:
 	v_v9 = v_v5;
 	v_v10 = v_v3;
 	v_v11 = v_v5;
-	sv = sx16(v_v4);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	sv = v_v4;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2)
 		goto L5;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L12;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L13;
 	s.fail("switch without case in 19b6:098d");
 	goto Lend;
@@ -43613,16 +43613,16 @@ L6:
 	v_v25 = v_v11;
 	v_v26 = v_v12;
 	v_v56 = v_v12;
-	sv = sx16(v_v10);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v10;
+	if (sv == 0x0)
 		goto L98;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L105;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L112;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L119;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L120;
 	s.fail("switch without case in 19b6:0c7a");
 	goto Lend;
@@ -45762,16 +45762,16 @@ L14:
 	v_v30 = v_v34;
 	v_v46 = v_v33;
 	v_v47 = v_v34;
-	sv = sx16(v_v31);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v31;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x3)
 		goto L17;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L20;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x4 || sv == 0x5 || sv == 0x6)
 		goto L24;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L29;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L30;
 	s.fail("switch without case in 19b6:0fb3");
 	goto Lend;
@@ -45953,12 +45953,12 @@ L35:
 	v_v89 = v_v77;
 	v_v88 = v_v76;
 	v_v89 = v_v77;
-	sv = sx16(v_v73);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v73;
+	if (sv == 0x0)
 		goto L38;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L162;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L163;
 	s.fail("switch without case in 19b6:0fb3");
 	goto Lend;
@@ -45995,18 +45995,18 @@ L38:
 	v_v84 = v_v81;
 	v_v85 = v_v82;
 	v_v86 = v_v83;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65526)));
-	if (sv == 256 || (sv & 0xffff) == 256)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65526));
+	if (sv == 0x100)
 		goto L40;
-	if (sv == 261 || (sv & 0xffff) == 261)
+	if (sv == 0x105)
 		goto L139;
-	if (sv == 770 || (sv & 0xffff) == 770)
+	if (sv == 0x302)
 		goto L140;
-	if (sv == 778 || (sv & 0xffff) == 778)
+	if (sv == 0x30a)
 		goto L147;
-	if (sv == 1025 || (sv & 0xffff) == 1025)
+	if (sv == 0x401)
 		goto L151;
-	if (sv == 1026 || (sv & 0xffff) == 1026)
+	if (sv == 0x402)
 		goto L152;
 	goto L161;
 L39:
@@ -47233,16 +47233,16 @@ L3:
 	v_v16 = v_v4;
 	v_v16 = v_v4;
 	v_v16 = v_v4;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L12;
 	s.fail("switch without case in 19b6:13fa");
 	goto Lend;
@@ -50608,12 +50608,12 @@ L31:
 	v_v76 = v_v72;
 	v_v75 = v_v71;
 	v_v76 = v_v72;
-	sv = sx16(v_v70);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v70;
+	if (sv == 0x0)
 		goto L33;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L40;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L41;
 	s.fail("switch without case in 1c5e:00bd");
 	goto Lend;
@@ -51540,12 +51540,12 @@ L44:
 	v_v149 = v_v137;
 	v_v148 = v_v136;
 	v_v149 = v_v137;
-	sv = sx16(v_v134);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v134;
+	if (sv == 0x0)
 		goto L47;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5)
 		goto L60;
-	if (sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L61;
 	s.fail("switch without case in 1c5e:0436");
 	goto Lend;
@@ -51699,18 +51699,18 @@ L63:
 	v_v193 = v_v177;
 	v_v194 = v_v176;
 	v_v195 = v_v177;
-	sv = sx16(v_v174);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v174;
+	if (sv == 0x0)
 		goto L66;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L82;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L83;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L90;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L94;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L98;
 	s.fail("switch without case in 1c5e:0436");
 	goto Lend;
@@ -52630,14 +52630,14 @@ L13:
 	v_v57 = v_v48;
 	v_v59 = v_v47;
 	v_v60 = v_v48;
-	sv = sx16(v_v45);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v45;
+	if (sv == 0x0)
 		goto L16;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L20;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L21;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L22;
 	s.fail("switch without case in 1d22:0082");
 	goto Lend;
@@ -57884,16 +57884,16 @@ L3:
 	v_v19 = v_v5;
 	v_v20 = v_v3;
 	v_v21 = v_v5;
-	sv = sx16(v_v4);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v4;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L9;
 	s.fail("switch without case in 1ee6:05d3");
 	goto Lend;
@@ -59995,8 +59995,8 @@ L6:
 	v_v2 = v_v12;
 	v_v3 = v_v14;
 	v_v4 = v_v15;
-	sv = sx16(v_v13);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v13;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L22;
 	s.fail("switch without case in 1f48:06b9");
 	goto Lend;
@@ -61373,12 +61373,12 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x2 || sv == 0x3)
 		goto L7;
 	s.fail("switch without case in 209a:0097");
 	goto Lend;
@@ -61651,12 +61651,12 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x2 || sv == 0x3)
 		goto L7;
 	s.fail("switch without case in 20a7:0106");
 	goto Lend;
@@ -61739,14 +61739,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	sv = v_v1;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2)
 		goto L5;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x3 || sv == 0x5 || sv == 0x6 || sv == 0x7)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x4 || sv == 0x9)
 		goto L7;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L8;
 	s.fail("switch without case in 20bc:000e");
 	goto Lend;
@@ -62569,20 +62569,20 @@ L2:
 	v_v10 = v_v1;
 	v_v11 = v_v3;
 	v_v12 = v_v1;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L7;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L20;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L37;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L50;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L70;
 	s.fail("switch without case in 20bc:030c");
 	goto Lend;
@@ -62613,26 +62613,26 @@ L7:
 	s.ww(fr.ss, (uint16)(fr.bp + 65534), v_v7);
 	v_v13 = fr.entry.ax;
 	v_v6 = fr.entry.ax;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 1 || (sv & 0xffff) == 1)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L12;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L13;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L14;
-	if (sv == 43 || (sv & 0xffff) == 43)
+	if (sv == 0x2b)
 		goto L15;
-	if (sv == 44 || (sv & 0xffff) == 44)
+	if (sv == 0x2c)
 		goto L16;
-	if (sv == 45 || (sv & 0xffff) == 45)
+	if (sv == 0x2d)
 		goto L17;
-	if (sv == 46 || (sv & 0xffff) == 46)
+	if (sv == 0x2e)
 		goto L18;
 	goto L19;
 L8:
@@ -62855,12 +62855,12 @@ L30:
 L31:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v25);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v25;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L34;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x4 || sv == 0x9)
 		goto L35;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L36;
 	s.fail("switch without case in 20bc:030c");
 	goto Lend;
@@ -63076,12 +63076,12 @@ L61:
 	v_v54 = v_v48;
 	v_v51 = v_v46;
 	v_v52 = v_v48;
-	sv = sx16(v_v47);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v47;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L64;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x4 || sv == 0x9)
 		goto L65;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0x8)
 		goto L66;
 	s.fail("switch without case in 20bc:030c");
 	goto Lend;
@@ -63789,14 +63789,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
 	s.fail("switch without case in 2117:0212");
 	goto Lend;
@@ -64464,18 +64464,18 @@ L2:
 	v_v3 = v_v2;
 	v_v4 = v_v2;
 	v_v5 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x3)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L16;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L25;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L34;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L41;
 	s.fail("switch without case in 2117:050a");
 	goto Lend;
@@ -64731,18 +64731,18 @@ L41:
 	if (s.blockStep(fr))
 		goto Lend;
 	s.ww(fr.ss, (uint16)(fr.bp + 65534), v_v5);
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 5 || (sv & 0xffff) == 5)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0x5)
 		goto L43;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L44;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L45;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L46;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L47;
-	if (sv == 31 || (sv & 0xffff) == 31)
+	if (sv == 0x1f)
 		goto L48;
 	goto L49;
 L42:
@@ -65180,26 +65180,26 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L12;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L13;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L14;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L18;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L19;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L20;
 	s.fail("switch without case in 2187:017a");
 	goto Lend;
@@ -66111,14 +66111,14 @@ L2:
 L3:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L14;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L15;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L16;
 	s.fail("switch without case in 21b0:0223");
 	goto Lend;
@@ -66341,20 +66341,20 @@ L19:
 L20:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v3;
+	if (sv == 0x0)
 		goto L23;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L36;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 4 || (sv & 0xffff) == 4 || sv == 6 || (sv & 0xffff) == 6 || sv == 8 || (sv & 0xffff) == 8 || sv == 9 || (sv & 0xffff) == 9 || sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0x2 || sv == 0x4 || sv == 0x6 || sv == 0x8 || sv == 0x9 || sv == 0xb)
 		goto L40;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L41;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L45;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L49;
-	if (sv == 10 || (sv & 0xffff) == 10)
+	if (sv == 0xa)
 		goto L53;
 	s.fail("switch without case in 21b0:0223");
 	goto Lend;
@@ -67143,16 +67143,16 @@ L2:
 	v_v10 = v_v4;
 	v_v15 = v_v3;
 	v_v16 = v_v4;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x8)
 		goto L33;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L34;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L38;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L53;
 	s.fail("switch without case in 21b0:06b4");
 	goto Lend;
@@ -67220,16 +67220,16 @@ L7:
 	v_v29 = v_v21;
 	v_v24 = v_v20;
 	v_v25 = v_v21;
-	sv = sx16(v_v19);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v19;
+	if (sv == 0x0)
 		goto L10;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L11;
-	if (sv == 3 || (sv & 0xffff) == 3 || sv == 5 || (sv & 0xffff) == 5 || sv == 7 || (sv & 0xffff) == 7 || sv == 9 || (sv & 0xffff) == 9 || sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0x3 || sv == 0x5 || sv == 0x7 || sv == 0x9 || sv == 0xc)
 		goto L12;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 6 || (sv & 0xffff) == 6 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x4 || sv == 0x6 || sv == 0x8)
 		goto L13;
-	if (sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xa || sv == 0xb)
 		goto L14;
 	s.fail("switch without case in 21b0:06b4");
 	goto Lend;
@@ -67545,26 +67545,26 @@ L40:
 	v_v87 = v_v69;
 	v_v88 = v_v68;
 	v_v89 = v_v69;
-	sv = sx16(v_v67);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v67;
+	if (sv == 0x0)
 		goto L43;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L44;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L45;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L46;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L47;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L48;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L49;
-	if (sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8 || sv == 9 || (sv & 0xffff) == 9 || sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11 || sv == 12 || (sv & 0xffff) == 12 || sv == 13 || (sv & 0xffff) == 13 || sv == 14 || (sv & 0xffff) == 14 || sv == 15 || (sv & 0xffff) == 15 || sv == 16 || (sv & 0xffff) == 16 || sv == 17 || (sv & 0xffff) == 17 || sv == 18 || (sv & 0xffff) == 18 || sv == 19 || (sv & 0xffff) == 19)
+	if (sv == 0x7 || sv == 0x8 || sv == 0x9 || sv == 0xa || sv == 0xb || sv == 0xc || sv == 0xd || sv == 0xe || sv == 0xf || sv == 0x10 || sv == 0x11 || sv == 0x12 || sv == 0x13)
 		goto L50;
-	if (sv == 20 || (sv & 0xffff) == 20)
+	if (sv == 0x14)
 		goto L51;
-	if (sv == 21 || (sv & 0xffff) == 21)
+	if (sv == 0x15)
 		goto L52;
 	s.fail("switch without case in 21b0:06b4");
 	goto Lend;
@@ -67779,18 +67779,18 @@ L58:
 	v_v110 = v_v98;
 	v_v101 = v_v97;
 	v_v102 = v_v98;
-	sv = sx16(v_v96);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6 || sv == 7 || (sv & 0xffff) == 7 || sv == 12 || (sv & 0xffff) == 12)
+	sv = v_v96;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x3 || sv == 0x4 || sv == 0x5 || sv == 0x6 || sv == 0x7 || sv == 0xc)
 		goto L61;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L71;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L72;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L82;
-	if (sv == 10 || (sv & 0xffff) == 10)
+	if (sv == 0xa)
 		goto L92;
-	if (sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xb)
 		goto L108;
 	s.fail("switch without case in 21b0:06b4");
 	goto Lend;
@@ -69380,18 +69380,18 @@ L2:
 	v_v23 = v_v6;
 	v_v24 = v_v5;
 	v_v25 = v_v6;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v3;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4)
 		goto L25;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L26;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L48;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L67;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L76;
 	s.fail("switch without case in 2258:035e");
 	goto Lend;
@@ -69811,34 +69811,34 @@ L50:
 	v_v143 = v_v112;
 	v_v144 = v_v111;
 	v_v145 = v_v112;
-	sv = sx16(v_v110);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v110;
+	if (sv == 0x0)
 		goto L53;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L54;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L55;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L56;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L57;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L58;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L59;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L60;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L61;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L62;
-	if (sv == 10 || (sv & 0xffff) == 10)
+	if (sv == 0xa)
 		goto L63;
-	if (sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xb)
 		goto L64;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L65;
-	if (sv == 13 || (sv & 0xffff) == 13)
+	if (sv == 0xd)
 		goto L66;
 	s.fail("switch without case in 2258:035e");
 	goto Lend;
@@ -71331,8 +71331,8 @@ L83:
 	v_v110 = v_v109;
 	v_v110 = v_v109;
 	v_v110 = v_v109;
-	sv = sx16(v_v108);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v108;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L86;
 	s.fail("switch without case in 22c1:0162");
 	goto Lend;
@@ -71519,18 +71519,18 @@ L2:
 	v_v13 = v_v3;
 	v_v14 = v_v4;
 	v_v15 = v_v4;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4)
 		goto L14;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L15;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L24;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L35;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L47;
 	s.fail("switch without case in 22c1:060b");
 	goto Lend;
@@ -71688,18 +71688,18 @@ L26:
 	v_v41 = v_v36;
 	v_v43 = v_v36;
 	v_v44 = v_v36;
-	sv = sx16(v_v35);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v35;
+	if (sv == 0x0)
 		goto L29;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L30;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L31;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L32;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L33;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L34;
 	s.fail("switch without case in 22c1:060b");
 	goto Lend;
@@ -72239,16 +72239,16 @@ L5:
 	v_v12 = v_v5;
 	v_v13 = v_v6;
 	v_v14 = v_v6;
-	sv = sx16(v_v4);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v4;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x5 || sv == 0x6)
 		goto L14;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L15;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L31;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L32;
 	s.fail("switch without case in 2340:012a");
 	goto Lend;
@@ -72349,22 +72349,22 @@ L20:
 	v_v30 = v_v23;
 	v_v31 = v_v23;
 	v_v32 = v_v23;
-	sv = sx16(v_v22);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v22;
+	if (sv == 0x0)
 		goto L23;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L24;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L25;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L26;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L27;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L28;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L29;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L30;
 	s.fail("switch without case in 2340:012a");
 	goto Lend;
@@ -72495,12 +72495,12 @@ L34:
 	v_v43 = v_v40;
 	v_v44 = v_v40;
 	v_v42 = v_v40;
-	sv = sx16(v_v39);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v39;
+	if (sv == 0x0 || sv == 0x3)
 		goto L37;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L46;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L72;
 	s.fail("switch without case in 2340:012a");
 	goto Lend;
@@ -73248,20 +73248,20 @@ L2:
 	v_v13 = v_v2;
 	v_v14 = v_v3;
 	v_v15 = v_v3;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L14;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L15;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L19;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L26;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L49;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L50;
 	s.fail("switch without case in 2379:01ce");
 	goto Lend;
@@ -73460,36 +73460,36 @@ L31:
 	v_v46 = v_v32;
 	v_v47 = v_v32;
 	v_v48 = v_v32;
-	sv = sx16(v_v31);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v31;
+	if (sv == 0x0)
 		goto L34;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L35;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L36;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L37;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L38;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L39;
-	if (sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x6)
 		goto L40;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L41;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L42;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L43;
-	if (sv == 10 || (sv & 0xffff) == 10)
+	if (sv == 0xa)
 		goto L44;
-	if (sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xb)
 		goto L45;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L46;
-	if (sv == 13 || (sv & 0xffff) == 13)
+	if (sv == 0xd)
 		goto L47;
-	if (sv == 14 || (sv & 0xffff) == 14)
+	if (sv == 0xe)
 		goto L48;
 	s.fail("switch without case in 2379:01ce");
 	goto Lend;
@@ -74395,14 +74395,14 @@ L4:
 L5:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1)
+	sv = v_v2;
+	if (sv == 0x0 || sv == 0x1)
 		goto L8;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x2 || sv == 0x3)
 		goto L9;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L10;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L11;
 	s.fail("switch without case in 23cd:00ff");
 	goto Lend;
@@ -74531,18 +74531,18 @@ L2:
 	v_v5 = v_v1;
 	v_v6 = v_v3;
 	v_v7 = v_v3;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4)
 		goto L12;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L13;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L20;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L36;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L43;
 	s.fail("switch without case in 23cd:0172");
 	goto Lend;
@@ -74650,16 +74650,16 @@ L22:
 		goto Lend;
 	v_v12 = v_v10;
 	v_v13 = v_v10;
-	sv = sx16(v_v11);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v11;
+	if (sv == 0x0)
 		goto L25;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L26;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L30;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L34;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L35;
 	s.fail("switch without case in 23cd:0172");
 	goto Lend;
@@ -75315,14 +75315,14 @@ L2:
 L3:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L6;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L7;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L8;
 	s.fail("switch without case in 2407:00e5");
 	goto Lend;
@@ -75459,14 +75459,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
 	s.fail("switch without case in 2407:0205");
 	goto Lend;
@@ -75712,18 +75712,18 @@ L2:
 	v_v8 = v_v4;
 	v_v14 = v_v3;
 	v_v15 = v_v4;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x8)
 		goto L15;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L16;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L26;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L36;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L44;
 	s.fail("switch without case in 2407:02c0");
 	goto Lend;
@@ -75964,16 +75964,16 @@ L36:
 	v_v46 = v_v12;
 	v_v47 = v_v13;
 	v_v8 = v_v13;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 10 || (sv & 0xffff) == 10 || sv == 11 || (sv & 0xffff) == 11 || sv == 12 || (sv & 0xffff) == 12 || sv == 13 || (sv & 0xffff) == 13)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0xa || sv == 0xb || sv == 0xc || sv == 0xd)
 		goto L38;
-	if (sv == 14 || (sv & 0xffff) == 14 || sv == 16 || (sv & 0xffff) == 16)
+	if (sv == 0xe || sv == 0x10)
 		goto L39;
-	if (sv == 15 || (sv & 0xffff) == 15)
+	if (sv == 0xf)
 		goto L40;
-	if (sv == 17 || (sv & 0xffff) == 17)
+	if (sv == 0x11)
 		goto L41;
-	if (sv == 80 || (sv & 0xffff) == 80)
+	if (sv == 0x50)
 		goto L42;
 	goto L43;
 L37:
@@ -76105,8 +76105,8 @@ L52:
 	v_v55 = v_v54;
 	v_v55 = v_v54;
 	v_v55 = v_v54;
-	sv = sx16(v_v53);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	sv = v_v53;
+	if (sv == 0x0 || sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L55;
 	s.fail("switch without case in 2407:02c0");
 	goto Lend;
@@ -76135,14 +76135,14 @@ L57:
 	v_v59 = v_v57;
 	v_v60 = v_v57;
 	v_v61 = v_v57;
-	sv = sx16(v_v56);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v56;
+	if (sv == 0x0)
 		goto L60;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L61;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L62;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L63;
 	s.fail("switch without case in 2407:02c0");
 	goto Lend;
@@ -76549,14 +76549,14 @@ L4:
 L5:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
 	s.fail("switch without case in 245b:006e");
 	goto Lend;
@@ -76702,12 +76702,12 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1)
+	sv = v_v1;
+	if (sv == 0x0 || sv == 0x1)
 		goto L5;
-	if (sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x2 || sv == 0x3)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x4 || sv == 0x5)
 		goto L7;
 	s.fail("switch without case in 245b:00f1");
 	goto Lend;
@@ -76869,20 +76869,20 @@ L2:
 	v_v9 = v_v1;
 	v_v10 = v_v3;
 	v_v11 = v_v1;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L9;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L10;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L20;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L24;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L28;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L32;
 	s.fail("switch without case in 245b:019e");
 	goto Lend;
@@ -77249,18 +77249,18 @@ L2:
 L3:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L9;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L13;
 	s.fail("switch without case in 2485:0056");
 	goto Lend;
@@ -77720,18 +77720,18 @@ L4:
 L5:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L8;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L10;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L11;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L12;
-	if (sv == 5 || (sv & 0xffff) == 5)
+	if (sv == 0x5)
 		goto L13;
 	s.fail("switch without case in 2485:0255");
 	goto Lend;
@@ -77965,20 +77965,20 @@ L2:
 	v_v11 = v_v4;
 	v_v12 = v_v4;
 	v_v13 = v_v4;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L18;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L19;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L26;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L33;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L54;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L67;
 	s.fail("switch without case in 2485:02c8");
 	goto Lend;
@@ -78095,14 +78095,14 @@ L19:
 	v_v25 = v_v8;
 	v_v26 = v_v8;
 	v_v7 = v_v8;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 20 || (sv & 0xffff) == 20)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0x14)
 		goto L21;
-	if (sv == 49 || (sv & 0xffff) == 49)
+	if (sv == 0x31)
 		goto L22;
-	if (sv == 50 || (sv & 0xffff) == 50)
+	if (sv == 0x32)
 		goto L23;
-	if (sv == 51 || (sv & 0xffff) == 51)
+	if (sv == 0x33)
 		goto L24;
 	goto L25;
 L20:
@@ -78236,30 +78236,30 @@ L33:
 	v_v46 = v_v11;
 	v_v47 = v_v11;
 	v_v7 = v_v11;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65532)));
-	if (sv == 10 || (sv & 0xffff) == 10)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65532));
+	if (sv == 0xa)
 		goto L35;
-	if (sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xb)
 		goto L36;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L37;
-	if (sv == 13 || (sv & 0xffff) == 13)
+	if (sv == 0xd)
 		goto L38;
-	if (sv == 14 || (sv & 0xffff) == 14)
+	if (sv == 0xe)
 		goto L39;
-	if (sv == 15 || (sv & 0xffff) == 15)
+	if (sv == 0xf)
 		goto L43;
-	if (sv == 16 || (sv & 0xffff) == 16)
+	if (sv == 0x10)
 		goto L44;
-	if (sv == 20 || (sv & 0xffff) == 20)
+	if (sv == 0x14)
 		goto L48;
-	if (sv == 21 || (sv & 0xffff) == 21)
+	if (sv == 0x15)
 		goto L49;
-	if (sv == 22 || (sv & 0xffff) == 22)
+	if (sv == 0x16)
 		goto L50;
-	if (sv == 23 || (sv & 0xffff) == 23)
+	if (sv == 0x17)
 		goto L51;
-	if (sv == 80 || (sv & 0xffff) == 80)
+	if (sv == 0x50)
 		goto L52;
 	goto L53;
 L34:
@@ -79019,14 +79019,14 @@ L2:
 		goto Lend;
 	v_v3 = v_v2;
 	v_v4 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4 || sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4 || sv == 0x7)
 		goto L6;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L7;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L11;
 	s.fail("switch without case in 24de:0133");
 	goto Lend;
@@ -79676,14 +79676,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
 	s.fail("switch without case in 2523:0053");
 	goto Lend;
@@ -79841,12 +79841,12 @@ L2:
 L3:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x1 || sv == 0x2)
 		goto L9;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L10;
 	s.fail("switch without case in 2523:00c0");
 	goto Lend;
@@ -80015,20 +80015,20 @@ L2:
 	v_v4 = v_v2;
 	v_v5 = v_v2;
 	v_v6 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L9;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L10;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L19;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L23;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L32;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L36;
 	s.fail("switch without case in 2523:01da");
 	goto Lend;
@@ -80545,16 +80545,16 @@ L2:
 	v_v3 = v_v2;
 	v_v4 = v_v2;
 	v_v5 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 7 || (sv & 0xffff) == 7 || sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x7 || sv == 0x8)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L7;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L11;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L15;
 	s.fail("switch without case in 254f:0146");
 	goto Lend;
@@ -80676,16 +80676,16 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L8;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L9;
 	s.fail("switch without case in 256b:000a");
 	goto Lend;
@@ -81477,14 +81477,14 @@ L7:
 L8:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0 || sv == 1 || (sv & 0xffff) == 1)
+	sv = v_v3;
+	if (sv == 0x0 || sv == 0x1)
 		goto L11;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L12;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L13;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L14;
 	s.fail("switch without case in 256b:02a5");
 	goto Lend;
@@ -82206,20 +82206,20 @@ L2:
 	v_v4 = v_v2;
 	v_v5 = v_v2;
 	v_v6 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L7;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L16;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L29;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L38;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L48;
 	s.fail("switch without case in 25a5:0254");
 	goto Lend;
@@ -82470,16 +82470,16 @@ L39:
 L40:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v13);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v13;
+	if (sv == 0x0)
 		goto L43;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L44;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L45;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L46;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L47;
 	s.fail("switch without case in 25a5:0254");
 	goto Lend;
@@ -83189,20 +83189,20 @@ L2:
 	v_v4 = v_v2;
 	v_v5 = v_v2;
 	v_v6 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L6;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L7;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L13;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L17;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L23;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L32;
 	s.fail("switch without case in 25eb:0243");
 	goto Lend;
@@ -84354,18 +84354,18 @@ L2:
 	v_v8 = v_v3;
 	v_v9 = v_v3;
 	v_v10 = v_v3;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x4)
 		goto L12;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L13;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L17;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L27;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L40;
 	s.fail("switch without case in 2624:032d");
 	goto Lend;
@@ -84466,20 +84466,20 @@ L17:
 	v_v22 = v_v8;
 	v_v23 = v_v8;
 	v_v6 = v_v8;
-	sv = sx16(s.rw(fr.ss, (uint16)(fr.bp + 65534)));
-	if (sv == 10 || (sv & 0xffff) == 10)
+	sv = s.rw(fr.ss, (uint16)(fr.bp + 65534));
+	if (sv == 0xa)
 		goto L19;
-	if (sv == 11 || (sv & 0xffff) == 11)
+	if (sv == 0xb)
 		goto L20;
-	if (sv == 12 || (sv & 0xffff) == 12)
+	if (sv == 0xc)
 		goto L21;
-	if (sv == 13 || (sv & 0xffff) == 13)
+	if (sv == 0xd)
 		goto L22;
-	if (sv == 30 || (sv & 0xffff) == 30)
+	if (sv == 0x1e)
 		goto L23;
-	if (sv == 31 || (sv & 0xffff) == 31)
+	if (sv == 0x1f)
 		goto L24;
-	if (sv == 32 || (sv & 0xffff) == 32)
+	if (sv == 0x20)
 		goto L25;
 	goto L26;
 L18:
@@ -85775,14 +85775,14 @@ L7:
 L8:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v4);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v4;
+	if (sv == 0x0)
 		goto L11;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L12;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L13;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L14;
 	s.fail("switch without case in 26a0:00e9");
 	goto Lend;
@@ -86031,20 +86031,20 @@ L2:
 	v_v4 = v_v2;
 	v_v5 = v_v2;
 	v_v6 = v_v2;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3)
 		goto L12;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L13;
-	if (sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x5 || sv == 0x6)
 		goto L17;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L21;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L30;
-	if (sv == 9 || (sv & 0xffff) == 9)
+	if (sv == 0x9)
 		goto L34;
 	s.fail("switch without case in 26a0:0271");
 	goto Lend;
@@ -87078,16 +87078,16 @@ L2:
 	v_v17 = v_v2;
 	v_v18 = v_v4;
 	v_v19 = v_v5;
-	sv = sx16(v_v3);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v3;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 2 || (sv & 0xffff) == 2 || sv == 3 || (sv & 0xffff) == 3 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x1 || sv == 0x2 || sv == 0x3 || sv == 0x5 || sv == 0x6)
 		goto L9;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L10;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L14;
-	if (sv == 8 || (sv & 0xffff) == 8)
+	if (sv == 0x8)
 		goto L26;
 	s.fail("switch without case in 26eb:014b");
 	goto Lend;
@@ -87191,14 +87191,14 @@ L16:
 	v_v40 = v_v32;
 	v_v41 = v_v31;
 	v_v42 = v_v32;
-	sv = sx16(v_v30);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v30;
+	if (sv == 0x0)
 		goto L19;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L20;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L24;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L25;
 	s.fail("switch without case in 26eb:014b");
 	goto Lend;
@@ -88022,14 +88022,14 @@ L1:
 L2:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v1);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v1;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L6;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L7;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L14;
 	s.fail("switch without case in 272b:0118");
 	goto Lend;
@@ -88879,16 +88879,16 @@ L2:
 		goto Lend;
 	v_v3 = v_v1;
 	v_v4 = v_v1;
-	sv = sx16(v_v2);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v2;
+	if (sv == 0x0)
 		goto L5;
-	if (sv == 1 || (sv & 0xffff) == 1 || sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x1 || sv == 0x3)
 		goto L9;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L13;
-	if (sv == 4 || (sv & 0xffff) == 4 || sv == 5 || (sv & 0xffff) == 5 || sv == 6 || (sv & 0xffff) == 6)
+	if (sv == 0x4 || sv == 0x5 || sv == 0x6)
 		goto L17;
-	if (sv == 7 || (sv & 0xffff) == 7)
+	if (sv == 0x7)
 		goto L18;
 	s.fail("switch without case in 2776:01c0");
 	goto Lend;
@@ -88992,16 +88992,16 @@ L19:
 L20:
 	if (s.blockStep(fr))
 		goto Lend;
-	sv = sx16(v_v6);
-	if (sv == 0 || (sv & 0xffff) == 0)
+	sv = v_v6;
+	if (sv == 0x0)
 		goto L23;
-	if (sv == 1 || (sv & 0xffff) == 1)
+	if (sv == 0x1)
 		goto L24;
-	if (sv == 2 || (sv & 0xffff) == 2)
+	if (sv == 0x2)
 		goto L25;
-	if (sv == 3 || (sv & 0xffff) == 3)
+	if (sv == 0x3)
 		goto L26;
-	if (sv == 4 || (sv & 0xffff) == 4)
+	if (sv == 0x4)
 		goto L27;
 	s.fail("switch without case in 2776:01c0");
 	goto Lend;

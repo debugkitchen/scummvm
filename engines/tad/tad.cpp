@@ -327,10 +327,10 @@ static ProgramCode programCode(const Common::String &gameId, uint program) {
 		c.prims = program ? bifi2XP01Prims : nullptr;
 		c.graphics = program ? &bifi2XP01Graphics : nullptr;
 	} else if (gameId == "telekommando2") {
-		c.scripts = nullptr;
+		c.scripts = program ? tk2XP01Functions : nullptr;
 		c.ds = program ? 0x2bb0 : 0x1d3d;
 		c.hand = nullptr;
-		c.prims = nullptr;
+		c.prims = program ? tk2XP01Prims : nullptr;
 		c.graphics = nullptr;
 	} else {
 		c.scripts = program ? schattenXP01Functions : schattenXP00Functions;

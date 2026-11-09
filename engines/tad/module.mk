@@ -18,6 +18,7 @@ MODULE_OBJS = \
 	script_bifi2_xp01.o \
 	script_schatten_xp00.o \
 	script_schatten_xp01.o \
+	script_tk2_xp01.o \
 	tad.o
 
 # This module can be built as a plugin

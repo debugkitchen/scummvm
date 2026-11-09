@@ -31,6 +31,7 @@ extern const ScriptFunction bifi2XP00Functions[];
 extern const ScriptFunction bifi2XP01Functions[];
 extern const ScriptFunction schattenXP00Functions[];
 extern const ScriptFunction schattenXP01Functions[];
+extern const ScriptFunction tk2XP01Functions[];
 
 } // End of namespace Tad
 

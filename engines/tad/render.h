@@ -56,6 +56,7 @@ struct GfxLayout {
 
 extern const GfxLayout bifi2XP01Layout;
 extern const GfxLayout schattenXP01Layout;
+extern const GfxLayout tk2XP01Layout;
 
 class Gfx {
 public:
