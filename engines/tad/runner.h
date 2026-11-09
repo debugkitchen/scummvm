@@ -37,6 +37,12 @@ struct ProgramDesc {
 	uint16 frameSeg, frameOff;    ///< input function at the end of a frame (0: frames at the vertical retrace)
 	bool stopOnError;             ///< an exit code other than 0 ends the game (title program: quit)
 	DosVm::MouseVars mouse;
+	/**
+	 * Offset of the sound table of the driver interface: 012C in the second generation, then
+	 * music 021C, detector 030C, samples 03DC; Telekommando 2 has the detector first (012C),
+	 * then sound 01FC, music 02EC and samples 03DC
+	 */
+	uint16 soundTable;
 };
 
 /** Files of the game folder plus the files the programs write (savegames in the save folder) */
@@ -55,6 +61,8 @@ private:
 	Common::String saveName(const Common::String &name) const;
 
 	Common::String _target;
+	/** Savegames deleted by the program: one in the game folder no longer counts */
+	Common::HashMap<Common::String, bool, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> _removed;
 	bool _keepWrites;
 	Common::HashMap<Common::String, ByteArrayPtr, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> _cache;
 };
@@ -136,6 +144,11 @@ protected:
 
 private:
 	void installSound();
+	/** Offset of a function of the sound driver interface (second generation numbering) in this
+	 *  program; 0 if it has none */
+	uint16 soundOffset(uint16 off) const;
+	/** The reverse: second generation numbering of a function at off */
+	uint16 soundFunction(uint16 off) const;
 	void startFrame();
 	uint32 remaining() const;
 
@@ -145,6 +158,7 @@ private:
 	const PrimAddress *_prims;
 	EngineGraphics *_graphics;
 	Sound *_sound;
+	uint16 _soundShift;      ///< offsets of the sound and music tables against the second generation
 	int _syncDepth;          ///< inside callSync: frames do not end
 	int _frame;
 	uint32 _frameSteps;

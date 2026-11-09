@@ -477,6 +477,7 @@ void DosVm::hleDos() {
 			err(2);
 			return;
 		}
+		debug(2, "TAD: open %s", name.c_str());
 		Handle h;
 		h.name = name;
 		h.data = _files->get(name);
@@ -489,6 +490,7 @@ void DosVm::hleDos() {
 	case 0x3c: {
 		Handle h;
 		h.name = fileName(str(sreg[kDS], R[kDX]));
+		debug(2, "TAD: create %s", h.name.c_str());
 		h.data = ByteArrayPtr(new ByteArray());
 		h.write = true;
 		const int id = _nextHandle++;

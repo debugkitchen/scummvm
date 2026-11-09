@@ -486,11 +486,20 @@ void Sound::playSample(const SamplePtr &s, byte volume) {
 // to the SM8 samples, the MDH track follows the header at +38h. For compileSong it is copied
 // into one buffer with offsets.
 void Sound::playLinkedModule(DosVm &vm, uint16 seg, uint16 off, bool loop) {
-	if (!_opl || !_haveMdh)
+	if (!_opl)
 		return;
 	const byte *m = vm.mem();
+	const int64 plx = ((int64)seg << 4) + off;
 	const int64 base = ((int64)_mdhSeg << 4) + _mdhOff - 0x38;
-	if (base < 0 || base + 0x1000 > kMemorySize || memcmp(m + base, "MTCVTS", 6) != 0) {
+	if (!_haveMdh || base < 0 || base + 0x1000 > kMemorySize || memcmp(m + base, "MTCVTS", 6) != 0) {
+		// a PLX block of its own, without drums (the intro of Telekommando 2)
+		if (plx + 0x8000 <= kMemorySize && memcmp(m + plx, "PLX", 3) == 0) {
+			SongPtr song = compileSong(m + plx, 0x8000, _driver->data(), _driver->size());
+			debugC(1, kDebugResources, "TAD: music %04x:%04x (PLX), %u rows, loop %d", seg, off,
+				   song ? song->rows.size() : 0, loop);
+			playSong(song, loop);
+			return;
+		}
 		warning("TAD: no music module at the MDH track");
 		return;
 	}
@@ -504,7 +513,7 @@ void Sound::playLinkedModule(DosVm &vm, uint16 seg, uint16 off, bool loop) {
 	for (uint32 i = 0; i < 0x1000; i++)
 		out.push_back(m[base + i]);
 	slots.clear();
-	add(((int64)seg << 4) + off, 0x8000);
+	add(plx, 0x8000);
 	for (int i = 1; i < 9; i++) {
 		const uint16 o = READ_LE_UINT16(m + base + 0x10 + 4 * i), sg = READ_LE_UINT16(m + base + 0x12 + 4 * i);
 		if ((!o && !sg) || sg == 0xffff)
@@ -555,6 +564,8 @@ void Sound::stubCall(DosVm &vm, uint16 off) {
 		break;
 	}
 	default:
+		debugC(3, kDebugResources, "TAD: sound driver %03x (%04x %04x %04x %04x)", off, stubArg(vm, 0), stubArg(vm, 1),
+			   stubArg(vm, 2), stubArg(vm, 3));
 		break;
 	}
 }

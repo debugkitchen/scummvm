@@ -187,7 +187,8 @@ Common::Error TadEngine::run() {
 	initGraphics(kScreenWidth, kScreenHeight);
 	setDebugger(new Console());
 
-	if (_version == kVersion2 && !ConfMan.hasKey("tad_dump_rooms") && !ConfMan.getBool("tad_room_viewer")) {
+	// all games run their original programs; the room viewer stays for tests
+	if (!ConfMan.hasKey("tad_dump_rooms") && !ConfMan.getBool("tad_room_viewer")) {
 		if (ConfMan.hasKey("tad_test"))
 			return runVersion2Test();
 		return runVersion2();
@@ -239,13 +240,18 @@ Common::Error TadEngine::runRoomViewer() {
 // ---------------------------------------------------------------------------- second generation
 
 static const ProgramDesc kBifi2Programs[] = {
-	{ "XP00.EXE", 0x187c, 0x01b0, true, { 0x1dd7, 0x270, 0x272, 0x180 } },
-	{ "XP01.EXE", 0x2819, 0x01b0, false, { 0x350a, 0x486, 0x488, 0x396 } }
+	{ "XP00.EXE", 0x187c, 0x01b0, true, { 0x1dd7, 0x270, 0x272, 0x180 }, 0x12c },
+	{ "XP01.EXE", 0x2819, 0x01b0, false, { 0x350a, 0x486, 0x488, 0x396 }, 0x12c }
+};
+static const ProgramDesc kTk2Programs[] = {
+	// the title program ends its frames at the vertical retrace
+	{ "XP00.EXE", 0, 0, true, { 0x1d3d, 0x26a, 0x26c, 0x17a }, 0x1fc },
+	{ "XP01.EXE", 0x202c, 0x01b0, false, { 0x2bb0, 0x278, 0x27a, 0x188 }, 0x1fc }
 };
 static const ProgramDesc kSchattenPrograms[] = {
 	// the title program ends its frames at the vertical retrace
-	{ "XP00.EXE", 0, 0, true, { 0x1e3a, 0x27a, 0x27c, 0x18a } },
-	{ "XP01.EXE", 0x279e, 0x01b0, false, { 0x31ef, 0x3e6, 0x3e8, 0x2f6 } }
+	{ "XP00.EXE", 0, 0, true, { 0x1e3a, 0x27a, 0x27c, 0x18a }, 0x12c },
+	{ "XP01.EXE", 0x279e, 0x01b0, false, { 0x31ef, 0x3e6, 0x3e8, 0x2f6 }, 0x12c }
 };
 
 /** Scan code of a key (German keyboard as in the original); 0 for keys the games do not use */
@@ -320,6 +326,12 @@ static ProgramCode programCode(const Common::String &gameId, uint program) {
 		c.hand = program ? bifi2XP01Hand : nullptr;
 		c.prims = program ? bifi2XP01Prims : nullptr;
 		c.graphics = program ? &bifi2XP01Graphics : nullptr;
+	} else if (gameId == "telekommando2") {
+		c.scripts = nullptr;
+		c.ds = program ? 0x2bb0 : 0x1d3d;
+		c.hand = nullptr;
+		c.prims = nullptr;
+		c.graphics = nullptr;
 	} else {
 		c.scripts = program ? schattenXP01Functions : schattenXP00Functions;
 		c.ds = program ? 0x31ef : 0x1e3a;
@@ -335,7 +347,8 @@ static void installScripts(ProgramVm &vm, const Common::String &gameId, uint pro
 	if (ConfMan.hasKey("tad_original") && ConfMan.getBool("tad_original"))
 		return;
 	const ProgramCode c = programCode(gameId, program);
-	vm.installScript(c.scripts, c.ds);
+	if (c.scripts)
+		vm.installScript(c.scripts, c.ds);
 	if (c.hand)
 		vm.installScript(c.hand, c.ds);
 	if (c.prims)
@@ -438,7 +451,8 @@ Sound *TadEngine::createSound() {
 }
 
 Common::Error TadEngine::runVersion2() {
-	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
+	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs :
+		getGameId() == "telekommando2" ? kTk2Programs : kSchattenPrograms;
 	GameFiles files(_targetName);
 	memset(g_asciiOfScan, 0, sizeof(g_asciiOfScan));
 	GameHost host(this);
@@ -469,6 +483,7 @@ public:
 	struct Input {
 		int frame;
 		bool poke;
+		bool key;
 		uint a, b, c;
 	};
 
@@ -489,7 +504,13 @@ public:
 	void frameStart(ProgramVm &vm, int f) override {
 		for (uint i = 0; i < input.size(); i++) {
 			const Input &in = input[i];
-			if (in.frame != f || in.poke)
+			if (in.key && (in.frame == f || in.frame + 1 == f)) {
+				// a key: pressed in its frame, released in the next
+				g_asciiOfScan[in.a] = in.b;
+				vm.keyEvent(in.frame == f ? in.a : in.a | 0x80);
+				continue;
+			}
+			if (in.frame != f || in.poke || in.key)
 				continue;
 			vm.mouse.x = in.a;
 			vm.mouse.y = in.b;
@@ -523,6 +544,12 @@ public:
 			Common::DumpFile d;
 			if (d.open(dumpPath))
 				d.write(vm.mem(), 0xa0000);
+			// the picture with its palette next to it
+			Common::DumpFile p;
+			if (p.open(dumpPath.getParent().appendComponent("screen.bin"))) {
+				p.write(vm.mem() + 0xa0000, 64000);
+				p.write(vm.dac(), 768);
+			}
 		}
 		byte buf[64000 + 768];
 		memcpy(buf, vm.mem() + 0xa0000, 64000);
@@ -540,7 +567,8 @@ Common::Error TadEngine::runVersion2Test() {
 	// tad_test = <program 0/1>, tad_test_input = file with lines "frame x y buttons" or
 	// "frame w seg off value" (poke), tad_test_frames = count, tad_test_output = file for the
 	// hashes, tad_test_script = true: the translated functions from frame tad_test_script_from
-	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
+	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs :
+		getGameId() == "telekommando2" ? kTk2Programs : kSchattenPrograms;
 	const uint p = ConfMan.getInt("tad_test");
 	GameFiles files(_targetName);
 	files.setKeepWrites(false);
@@ -588,6 +616,7 @@ Common::Error TadEngine::runVersion2Test() {
 		}
 	}
 	ProgramVm vm(&files, programs[p], &host);
+	vm.asciiOf = asciiOfScan;
 	// tad_test_sound: music and samples as in the game (they do not change the picture)
 	Common::ScopedPtr<Sound> sound;
 	if (ConfMan.hasKey("tad_test_sound") && ConfMan.getBool("tad_test_sound")) {
@@ -607,7 +636,14 @@ Common::Error TadEngine::runVersion2Test() {
 			while (!f.eos()) {
 				const Common::String line = f.readLine();
 				TestHost::Input in;
-				if (sscanf(line.c_str(), "%d w %x %x %x", &in.frame, &in.a, &in.b, &in.c) == 4) {
+				in.key = false;
+				if (sscanf(line.c_str(), "%d k %x %x", &in.frame, &in.a, &in.b) == 3) {
+					in.poke = false;
+					in.key = true;
+					in.a &= 0x7f;
+					in.c = 0;
+					host.input.push_back(in);
+				} else if (sscanf(line.c_str(), "%d w %x %x %x", &in.frame, &in.a, &in.b, &in.c) == 4) {
 					in.poke = true;
 					host.input.push_back(in);
 				} else if (sscanf(line.c_str(), "%d %u %u %u", &in.frame, &in.a, &in.b, &in.c) == 4) {

@@ -33,14 +33,17 @@
 
 namespace Tad {
 
-// default sound configuration (written by PSMCFG4.EXE): music AdLib 388h, samples SB 220h
+// default sound configuration (written by PSMCFG4.EXE, PSMCFG3.EXE for the first generation):
+// music AdLib 388h, samples SB 220h
 static const byte kPsmCfg[] = {
 	'P', 'S', 'M', '2', 'C', 'F', 'G', ',', ' ', 'V', 'E', 'R', 'S', 'I', 'O', 'N', ' ', '4', '.', '0', '0',
 	0, 1, 0, 0x88, 3, 1, 0, 0x20, 2, 0x28, 0, 1, 0, 2, 0
 };
 
 bool GameFiles::isSaveFile(const Common::String &name) const {
-	return name.hasPrefixIgnoreCase("SAVEGAME.");
+	// Bi-Fi 2 and Dunkle Schatten: SAVEGAME.SAV/.CFG; Telekommando 2: TK2.SAV (the savegame, and
+	// the name and figure of a new game from the title program)
+	return name.hasPrefixIgnoreCase("SAVEGAME.") || name.equalsIgnoreCase("TK2.SAV");
 }
 
 Common::String GameFiles::saveName(const Common::String &name) const {
@@ -52,9 +55,10 @@ bool GameFiles::has(const Common::String &name) {
 		Common::InSaveFile *f = g_system->getSavefileManager()->openForLoading(saveName(name));
 		const bool ok = f != nullptr;
 		delete f;
-		return ok;
+		// a savegame in the game folder counts until the game writes its own
+		return ok || (!_removed.contains(name) && Common::File::exists(Common::Path(name)));
 	}
-	if (name.equalsIgnoreCase("PSMCFG4.DAT"))
+	if (name.equalsIgnoreCase("PSMCFG4.DAT") || name.equalsIgnoreCase("PSMCFG3.DAT"))
 		return true;
 	return Common::File::exists(Common::Path(name));
 }
@@ -67,6 +71,12 @@ ByteArrayPtr GameFiles::get(const Common::String &name) {
 			data->resize(f->size());
 			f->read(data->data(), data->size());
 			delete f;
+		} else if (!_removed.contains(name)) {
+			Common::File g;
+			if (g.open(Common::Path(name))) {
+				data->resize(g.size());
+				g.read(data->data(), data->size());
+			}
 		}
 		return data;
 	}
@@ -78,6 +88,10 @@ ByteArrayPtr GameFiles::get(const Common::String &name) {
 		f.read(data->data(), data->size());
 	} else if (name.equalsIgnoreCase("PSMCFG4.DAT")) {
 		data->assign(kPsmCfg, kPsmCfg + sizeof(kPsmCfg));
+	} else if (name.equalsIgnoreCase("PSMCFG3.DAT")) {
+		// Telekommando 2 reads the same 36 bytes with version 3.00
+		data->assign(kPsmCfg, kPsmCfg + sizeof(kPsmCfg));
+		(*data)[17] = '3';
 	}
 	_cache[name] = data;
 	return data;
@@ -90,6 +104,7 @@ void GameFiles::put(const Common::String &name, const ByteArray &data) {
 		debug(1, "TAD: the program wrote %s (not kept)", name.c_str());
 		return;
 	}
+	_removed.erase(name);
 	Common::OutSaveFile *f = g_system->getSavefileManager()->openForSaving(saveName(name), false);
 	if (f) {
 		f->write(data.data(), data.size());
@@ -99,13 +114,17 @@ void GameFiles::put(const Common::String &name, const ByteArray &data) {
 }
 
 void GameFiles::remove(const Common::String &name) {
-	if (_keepWrites && isSaveFile(name))
+	if (_keepWrites && isSaveFile(name)) {
 		g_system->getSavefileManager()->removeSavefile(saveName(name));
+		_removed[name] = true;
+	}
 }
 
 // the stub table of the sound driver interface sits at the same offsets in every program of the
 // engine: functions that answer "ok" (1) and those that do nothing (0)
 static const uint16 kSoundOk[] = { 0x194, 0x1e5, 0x283, 0x2d4, 0x358, 0x3a9, 0x469, 0x4ba, 0x50b, 0x343 };
+static const uint16 kDetectorTable = 0x30c;
+static const uint16 kSamplesTable = 0x3dc;
 static const uint16 kSoundStubs[] = {
 	0x12c, 0x131, 0x136, 0x13b, 0x140, 0x145, 0x14a, 0x14f, 0x154, 0x159, 0x15e, 0x163, 0x168, 0x16d, 0x172, 0x177,
 	0x21c, 0x221, 0x226, 0x22b, 0x230, 0x235, 0x23a, 0x23f, 0x244, 0x249, 0x24e, 0x253, 0x258, 0x25d, 0x262,
@@ -115,7 +134,7 @@ static const uint16 kSoundStubs[] = {
 };
 
 ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host) : DosVm(files),
-	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _graphics(nullptr), _sound(nullptr), _syncDepth(0), _frame(0), _frameSteps(0),
+	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _graphics(nullptr), _sound(nullptr), _soundShift(0), _syncDepth(0), _frame(0), _frameSteps(0),
 	_frameBlocks(0), _error(false) {
 }
 
@@ -243,7 +262,8 @@ uint ProgramVm::scriptCount() const {
 }
 
 void ProgramVm::installSound() {
-	// the segment of the stub table: 16 jumps of five bytes ("nop nop jmp") from offset 0x12c
+	// the segment of the stub table: 16 jumps of five bytes ("nop nop jmp") at the first table
+	const uint16 first = _desc.soundTable;
 	uint16 seg = 0;
 	for (uint32 a = 0x10000; a < 0x50000 && !seg; a++) {
 		if (_mem[a] != 0x90 || _mem[a + 1] != 0x90 || _mem[a + 2] != 0xe9)
@@ -251,18 +271,38 @@ void ProgramVm::installSound() {
 		bool ok = true;
 		for (uint k = 1; k < 16 && ok; k++)
 			ok = _mem[a + 5 * k] == 0x90 && _mem[a + 5 * k + 1] == 0x90 && _mem[a + 5 * k + 2] == 0xe9;
-		if (!ok || (a - 0x12c) % 16)
+		if (!ok || (a - first) % 16)
 			continue;
-		seg = (a - 0x12c) >> 4;
+		seg = (a - first) >> 4;
 	}
 	if (!seg) {
 		warning("TAD: sound driver interface not found");
 		return;
 	}
+	_soundShift = first - 0x12c;
 	for (uint i = 0; i < ARRAYSIZE(kSoundOk); i++)
-		setTrap(seg, kSoundOk[i], kTrapSoundOk);
+		if (soundOffset(kSoundOk[i]))
+			setTrap(seg, soundOffset(kSoundOk[i]), kTrapSoundOk);
 	for (uint i = 0; i < ARRAYSIZE(kSoundStubs); i++)
-		setTrap(seg, kSoundStubs[i], kTrapSoundStub);
+		if (soundOffset(kSoundStubs[i]))
+			setTrap(seg, soundOffset(kSoundStubs[i]), kTrapSoundStub);
+}
+
+uint16 ProgramVm::soundOffset(uint16 off) const {
+	if (!_soundShift || off >= kSamplesTable)
+		return off;
+	// Telekommando 2: the detector table comes first, at 012C
+	if (off >= kDetectorTable)
+		return off - (kDetectorTable - 0x12c);
+	return off + _soundShift;
+}
+
+uint16 ProgramVm::soundFunction(uint16 off) const {
+	if (!_soundShift || off >= kSamplesTable)
+		return off;
+	if (off < 0x12c + _soundShift)
+		return off + (kDetectorTable - 0x12c);
+	return off - _soundShift;
 }
 
 DosVm::TrapResult ProgramVm::onTrap(int id) {
@@ -275,7 +315,7 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 		return kTrapContinue;
 	case kTrapSoundStub:
 		if (_sound)
-			_sound->stubCall(*this, ip);
+			_sound->stubCall(*this, soundFunction(ip));
 		retf(0, 0);
 		return kTrapContinue;
 	case kTrapScript:
