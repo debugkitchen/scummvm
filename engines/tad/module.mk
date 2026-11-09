@@ -13,6 +13,7 @@ MODULE_OBJS = \
 	room.o \
 	runner.o \
 	script.o \
+	sound.o \
 	script_bifi2_xp00.o \
 	script_bifi2_xp01.o \
 	script_schatten_xp00.o \

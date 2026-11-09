@@ -46,6 +46,8 @@ enum EngineVersion {
 	kVersion2 = 2
 };
 
+class Sound;
+
 class TadEngine : public Engine {
 public:
 	TadEngine(OSystem *syst, const ADGameDescription *gameDesc);
@@ -81,6 +83,7 @@ private:
 	Common::Error runRoomViewer();
 	/** Second generation: the original programs in the interpreter (title program, then the game) */
 	Common::Error runVersion2();
+	Sound *createSound();
 	/** Test mode of runVersion2: fixed input and time, a hash of every picture into a file */
 	Common::Error runVersion2Test();
 	void initPalette();

@@ -41,6 +41,7 @@
 #include "tad/prims.h"
 #include "tad/render.h"
 #include "tad/scripts.h"
+#include "tad/sound.h"
 #include "tad/tad.h"
 
 namespace Tad {
@@ -426,15 +427,27 @@ private:
 	Common::Array<byte> _held, _releases;
 };
 
+Sound *TadEngine::createSound() {
+	// music driver tables: PSMDRV.DAT member 5
+	if (!_resources.exists("PSMDRV.DAT")) {
+		warning("TAD: PSMDRV.DAT not found, no music");
+		return new Sound(_mixer, ByteArrayPtr());
+	}
+	const Common::Array<Span> &drv = _resources.group("PSMDRV.DAT");
+	return new Sound(_mixer, drv.size() > 5 ? loadRib(drv[5]) : ByteArrayPtr());
+}
+
 Common::Error TadEngine::runVersion2() {
 	const ProgramDesc *programs = getGameId() == "bifi2" ? kBifi2Programs : kSchattenPrograms;
 	GameFiles files(_targetName);
 	memset(g_asciiOfScan, 0, sizeof(g_asciiOfScan));
 	GameHost host(this);
+	Common::ScopedPtr<Sound> sound(createSound());
 
 	for (uint p = files.has("XP00.EXE") ? 0 : 1; p < 2 && !shouldQuit(); p++) {
 		ProgramVm vm(&files, programs[p], &host);
 		vm.asciiOf = asciiOfScan;
+		vm.setSound(sound.get());
 		if (!vm.start(*files.get(programs[p].exe)))
 			return Common::Error(Common::kUnknownError, Common::String::format("Could not start %s", programs[p].exe));
 		installScripts(vm, getGameId(), p);
@@ -575,6 +588,12 @@ Common::Error TadEngine::runVersion2Test() {
 		}
 	}
 	ProgramVm vm(&files, programs[p], &host);
+	// tad_test_sound: music and samples as in the game (they do not change the picture)
+	Common::ScopedPtr<Sound> sound;
+	if (ConfMan.hasKey("tad_test_sound") && ConfMan.getBool("tad_test_sound")) {
+		sound.reset(createSound());
+		vm.setSound(sound.get());
+	}
 	if (ConfMan.hasKey("tad_test_budget"))
 		vm.budget = ConfMan.getInt("tad_test_budget");
 	else

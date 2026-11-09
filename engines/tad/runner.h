@@ -64,6 +64,7 @@ struct ScriptFunction;
 struct PrimAddress;
 struct GraphicsDesc;
 class EngineGraphics;
+class Sound;
 class ProgramVm;
 
 /** What happens between two frames: picture, input and time (the game, or a test) */
@@ -104,6 +105,8 @@ public:
 	/** Assembler routines done in C++ that replace the original code */
 	void installPrims(const PrimAddress *list);
 	uint primCount() const;
+	/** Music and sound effects for the calls of the sound driver interface (not owned) */
+	void setSound(Sound *sound) { _sound = sound; }
 	/** Room picture, panel, texts and screen output in C++ */
 	void installGraphics(const GraphicsDesc &desc);
 
@@ -141,6 +144,7 @@ private:
 	ScriptRuntime *_script;
 	const PrimAddress *_prims;
 	EngineGraphics *_graphics;
+	Sound *_sound;
 	int _syncDepth;          ///< inside callSync: frames do not end
 	int _frame;
 	uint32 _frameSteps;

@@ -28,6 +28,7 @@
 #include "tad/prims.h"
 #include "tad/render.h"
 #include "tad/runner.h"
+#include "tad/sound.h"
 #include "tad/script.h"
 
 namespace Tad {
@@ -114,7 +115,7 @@ static const uint16 kSoundStubs[] = {
 };
 
 ProgramVm::ProgramVm(FileProvider *files, const ProgramDesc &desc, FrameHost *host) : DosVm(files),
-	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _graphics(nullptr), _syncDepth(0), _frame(0), _frameSteps(0),
+	budget(3000000), _desc(desc), _host(host), _script(nullptr), _prims(nullptr), _graphics(nullptr), _sound(nullptr), _syncDepth(0), _frame(0), _frameSteps(0),
 	_frameBlocks(0), _error(false) {
 }
 
@@ -273,6 +274,8 @@ DosVm::TrapResult ProgramVm::onTrap(int id) {
 		retf(1, 0);
 		return kTrapContinue;
 	case kTrapSoundStub:
+		if (_sound)
+			_sound->stubCall(*this, ip);
 		retf(0, 0);
 		return kTrapContinue;
 	case kTrapScript:
